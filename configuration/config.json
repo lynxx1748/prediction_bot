@@ -1,0 +1,204 @@
+{
+    "wallet": {
+        "address": "0xc3f4718e83e78a7986258b2c3e076436e5c77192",
+        "private_key_env": "TRADING_BOT_PRIVATE_KEY"
+    },
+    "trading": {
+        "bull_bias": 1.10, 
+        "target_player": "TARGET_WALLET_ADDRESS",
+        "_bet_strategy_comment": "Options: 'fixed', 'confidence', 'kelly', 'martingale'",
+        "bet_strategy": "fixed",
+        "_gas_strategy_comment": "Options: 'slow', 'medium', 'fast', 'aggressive'",
+        "gas_strategy": "slow",
+        "claim_gas_strategy": "slow",
+        "confidence_thresholds": {
+            "low": 0.45,
+            "medium": 0.65,
+            "high": 0.80
+        },
+        "scaled_bet_multipliers": {
+            "low": 0.7,
+            "medium": 1.2,
+            "high": 1.8
+        },
+        "stop_loss": 100,
+        "reverse_after_losses": 4,
+        "track_performance": true,
+        "scan_opportunities": true,
+        "execute_trade": true,
+        "betting_enabled": true,
+        "betting_mode": "live",
+        "wager_amount": 0.002,
+        "prediction_mode": "live",
+        "record_predictions": "live",
+        "prediction_weights": {
+            "ml": 0.15,
+            "pattern": 0.20,
+            "sentiment": 0.25,
+            "technical": 0.20,
+            "order_book": 0.20
+        },
+        "min_confidence": 0.49
+    },
+    "gas_price": {
+        "multipliers": {
+            "slow": 0.9,
+            "medium": 1.1,
+            "fast": 1.5,
+            "aggressive": 2.0
+        },
+        "min_gwei": 0.8,
+        "max_gwei": 2.0
+    },
+    "models": {
+        "use_random_forest": false,
+        "ensemble_weights": {
+            "model": 0.15,
+            "pattern": 0.25,
+            "market": 0.20,
+            "technical": 0.15,
+            "sentiment": 0.15,
+            "order_book": 0.10
+        },
+        "adaptive_weights": true,
+        "prediction_methods": {
+            "ml_prediction": false,
+            "pattern_prediction": true,
+            "hybrid_prediction": false
+        }
+    },
+    "database": {
+        "type": "sqlite",
+        "file": "./data/historical_data.db",
+        "tables": {
+            "trades": "trades",
+            "predictions": "predictions",
+            "signal_performance": "signal_performance",
+            "strategy_performance": "strategy_performance"
+        }
+    },
+    "blockchain": {
+        "network": "bsc",
+        "contract_address": "0x18B2A687610328590Bc8F2e5fEdDe3b582A49cdA",
+        "rpc": {
+            "primary": "https://bsc-dataseed.binance.org/",
+            "fallbacks": [
+                "https://bsc-dataseed1.binance.org/",
+                "https://bsc-dataseed2.binance.org/",
+                "https://bsc-dataseed3.binance.org/",
+                "https://bsc-dataseed4.binance.org/"
+            ]
+        }
+    },
+    "paths": {
+        "abi_file": "configuration/abi.json",
+        "log_file": "./data/trading_bot.log",
+        "bet_log_file": "./data/betting_log.txt",
+        "model_file": "./data/random_forest_model.pkl",
+        "scaler_file": "./data/random_forest_scaler.pkl",
+        "history_file": "./data/history.json"
+    },
+    "logging": {
+        "enable_debug": true,
+        "log_to_file": true,
+        "log_level": "INFO"
+    },
+    "api": {
+        "market": "https://api.binance.com/api/v3/ticker/price?symbols=[\"BNBUSDT\",\"BTCUSDT\"]"
+    },
+    "analysis": {
+        "technical": {
+            "enable": true,
+            "lookback_periods": {
+                "short": 14,
+                "medium": 30,
+                "long": 50
+            },
+            "indicators": {
+                "rsi": true,
+                "macd": true,
+                "bollinger_bands": true
+            }
+        },
+        "pattern": {
+            "enable": true,
+            "detect_head_shoulders": true,
+            "detect_double_bottom": true,
+            "detect_engulfing": true,
+            "detect_breakouts": true
+        },
+        "sentiment": {
+            "enable": true,
+            "use_fear_greed_index": true,
+            "use_social_media": false
+        },
+        "order_book": {
+            "enable": true,
+            "depth_limit": 100,
+            "imbalance_threshold": 0.2
+        }
+    },
+    "timing": {
+        "optimal_betting_seconds_before_lock": {
+            "min": 70,
+            "max": 100
+        },
+        "minimum_time_required": 60,
+        "early_exit_threshold": 30
+    },
+    "price_movement": {
+        "significant_change": 1.0,
+        "strong_change": 2.5,
+        "extreme_change": 5.0,
+        "enable": true
+    },
+    "ai_strategy": {
+        "enabled": true,
+        "models": {
+            "random_forest": {
+                "enabled": true,
+                "weight": 0.4,
+                "parameters": {
+                    "n_estimators": 100,
+                    "max_depth": 5,
+                    "min_samples_split": 10
+                }
+            },
+            "xgboost": {
+                "enabled": false,
+                "weight": 0.3,
+                "parameters": {
+                    "n_estimators": 100,
+                    "max_depth": 6,
+                    "learning_rate": 0.1
+                }
+            }
+        },
+        "training": {
+            "min_samples": 100,
+            "retrain_frequency": 10,
+            "feature_weights": {
+                "bull_ratio": 1.2,
+                "bear_ratio": 1.2,
+                "bnb_change": 1.2,
+                "btc_change": 1.1,
+                "model_prediction": 1.8,
+                "trend_prediction": 1.4,
+                "market_prediction": 1.5
+            }
+        },
+        "prediction_weights": {
+            "ai": 0.4,
+            "model": 0.2,
+            "market": 0.2,
+            "trend": 0.2
+        }
+    },
+    "contrarian_mode": {
+        "enable": true,
+        "accuracy_threshold": 0.35,
+        "consecutive_wrong_threshold": 5,
+        "minimum_samples": 5,
+        "cooldown_periods": 2
+    }
+}
