@@ -1,7 +1,7 @@
 {
     "wallet": {
         "address": "0xc3f4718e83e78a7986258b2c3e076436e5c77192",
-        "private_key_env": "TRADING_BOT_PRIVATE_KEY"
+        "private_key_env": "0xfdb9ef9109c2993814e08076b42c39a45998cf64a7053bd8f3cd92284ef1bc3e"
     },
     "trading": {
         "bull_bias": 1.10, 

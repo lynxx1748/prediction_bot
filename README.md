@@ -100,6 +100,27 @@ The bot records all predictions and outcomes to a local database. You can analyz
 SQLITEDB
 ```
 
+## 📝 Changelog
+
+### Version 0.2.0 (Alpha)
+- ✅ Fixed database issues with missing columns (timestamp, startTime)
+- ✅ Improved error handling for database operations
+- ✅ Enhanced Random Forest model to handle missing data columns
+- ✅ Fixed NULL value handling in price change calculations
+- ✅ Added mode-specific stats tracking (separate live and test mode stats)
+- ✅ Fixed wallet balance display to show correct balance based on mode
+- ✅ Added wallet address checksumming for Web3 compatibility
+- ✅ Improved logging system with automatic directory creation
+- ✅ Removed UI dependencies for better headless operation
+- ✅ Added persistent test wallet balance in database
+- ✅ Enhanced error recovery throughout the application
+
+### Version 0.1.0 (Initial Release)
+- ✅ Core prediction engine
+- ✅ Multiple prediction strategies implementation
+- ✅ Database integration for storing trades and predictions
+- ✅ Test betting system
+- ✅ Machine learning model integration
 
 ## 🔧 Development Status
 

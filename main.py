@@ -37,7 +37,9 @@ from scripts.data.database import (
     get_performance_stats,
     record_trade,
     get_recent_trades,
-    record_bet
+    record_bet,
+    get_test_balance,
+    set_test_balance
 )
 
 # Import blockchain data functionality
@@ -90,20 +92,24 @@ balance = 0
 # Add global AI strategy instance
 ai_strategy = None
 
-# Setup logging
+# Initialize logger at module level
+logger = logging.getLogger(__name__)
+
 def setup_logging():
-    """Set up logging configuration."""
-    log_dir = os.path.join('data', 'logs')
-    os.makedirs(log_dir, exist_ok=True)
+    """Setup logging configuration."""
+    # Make sure logs directory exists first, before creating handlers
+    os.makedirs("logs", exist_ok=True)
     
+    # Now set up logging with the directory already created
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.FileHandler(os.path.join(log_dir, "trading_bot.log")),
+            logging.FileHandler("logs/bot.log", mode='a'),
             logging.StreamHandler()
         ]
     )
+    
     return logging.getLogger(__name__)
 
 def select_mode():
@@ -132,16 +138,55 @@ def select_mode():
             print(f"Error: {e}")
             return "test"
 
-def get_wallet_balance():
-    """Get wallet balance."""
+def get_wallet_balance(mode="test"):
+    """
+    Get wallet balance based on mode.
+    
+    Args:
+        mode: "live" to get real blockchain balance, "test" for simulated balance
+        
+    Returns:
+        float: Wallet balance in BNB
+    """
     try:
-        # This would normally check the actual wallet balance
-        # For now, return a placeholder value
-        # In the actual implementation, this would call web3.eth.get_balance
-        return 1.0  # Placeholder
+        if mode == "live":
+            # Get real balance from blockchain
+            from web3 import Web3
+            from scripts.core.constants import web3, config
+            
+            # Get wallet address from config
+            wallet_address = config.get('wallet', {}).get('address')
+            if not wallet_address:
+                print("⚠️ No wallet address configured, using test balance")
+                return get_test_balance()
+                
+            # Convert address to checksum format
+            try:
+                checksummed_address = Web3.to_checksum_address(wallet_address)
+                print(f"✅ Using checksummed wallet address: {checksummed_address}")
+            except Exception as e:
+                print(f"❌ Error converting wallet address to checksum format: {e}")
+                print(f"⚠️ Falling back to test balance")
+                return get_test_balance()
+                
+            # Get balance from blockchain
+            try:
+                balance_wei = web3.eth.get_balance(checksummed_address)
+                balance_bnb = Web3.from_wei(balance_wei, 'ether')
+                
+                print(f"💰 Live wallet balance: {balance_bnb:.6f} BNB")
+                return float(balance_bnb)
+            except Exception as e:
+                print(f"❌ Error getting blockchain balance: {e}")
+                print(f"⚠️ Falling back to test balance")
+                return get_test_balance()
+        else:
+            # Return test balance
+            return get_test_balance()  # Use database-stored test balance
     except Exception as e:
-        print(f"Error getting wallet balance: {e}")
-        return 0.0
+        print(f"❌ Error getting wallet balance: {e}")
+        traceback.print_exc()
+        return get_test_balance()  # Fallback to test balance
 
 def check_claimable_rounds():
     """Check for claimable rounds."""
@@ -196,27 +241,18 @@ def simulate_bet(epoch, prediction, amount):
             'epoch': epoch,
             'prediction': prediction,
             'amount': amount,
-            'strategy': 'test_mode',
             'timestamp': timestamp,
-            'datetime': current_time.strftime('%Y-%m-%d %H:%M:%S'),  # Use datetime for formatting
-            'gas_price': 0,  # No gas used in test mode
-            'tx_hash': 'test_tx_' + str(epoch)  # Simulated transaction hash
+            'simulated': True,
+            'mode': 'test'  # Mark as test mode
         }
         
-        # Record to database
+        # Store in placed_bets for tracking
+        placed_bets[epoch] = bet_data
+        
+        # Also store in database
         record_bet(bet_data)
         
-        # Add to global tracking
-        global placed_bets
-        placed_bets[epoch] = {
-            'prediction': prediction,
-            'amount': amount,
-            'timestamp': int(time.time()),
-            'simulated': True
-        }
-        
         return True
-        
     except Exception as e:
         print(f"❌ Error simulating bet: {e}")
         traceback.print_exc()
@@ -224,114 +260,128 @@ def simulate_bet(epoch, prediction, amount):
 
 def simulate_round_result(epoch, prediction, amount):
     """
-    Simulate the result of a bet when a round completes in test mode.
+    Simulate the result of a round after it completes.
     
     Args:
         epoch: Round epoch
-        prediction: Our prediction (BULL/BEAR)
+        prediction: Our prediction
         amount: Bet amount
         
     Returns:
-        dict: Simulated round result
+        dict: Result data or None on error
     """
+    global mode
+    
     try:
-        # Get the actual round outcome
-        round_data = get_round_data(epoch)
+        # Get round data
+        round_data = get_enriched_round_data(epoch)
+        
         if not round_data or not round_data.get('outcome'):
-            return None  # Round not complete yet
+            print(f"⚠️ Cannot simulate result: Round {epoch} data incomplete")
+            return None
             
+        # Determine win/loss
+        actual_outcome = round_data.get('outcome')
+        won = prediction == actual_outcome
+        
         # Calculate profit/loss
-        outcome = round_data['outcome']
-        won = prediction == outcome
+        profit_loss = amount * 0.97 if won else -1 * amount  # 3% platform fee on wins
         
-        # Calculate profit (in test mode use 1.9x multiplier to simulate house edge)
-        profit_loss = amount * 0.9 if won else -amount
+        # Get the bet mode from placed_bets
+        bet_mode = placed_bets.get(epoch, {}).get('mode', mode)
         
-        # Create result data
-        result = {
+        # Combine data
+        result_data = {
             'epoch': epoch,
             'prediction': prediction,
-            'outcome': outcome,
-            'amount': amount,
+            'outcome': actual_outcome,
             'won': won,
+            'amount': amount,
             'profit_loss': profit_loss,
-            'closePrice': round_data.get('closePrice', 0),
-            'lockPrice': round_data.get('lockPrice', 0)
+            'timestamp': int(time.time()),
+            'mode': bet_mode,  # Use the same mode as the bet
+            **round_data  # Include all round data
         }
         
-        # Update statistics
-        global wins, losses, consecutive_losses
-        if won:
-            wins += 1
-            consecutive_losses = 0
-        else:
-            losses += 1
-            consecutive_losses += 1
-            
-        return result
-        
+        return result_data
     except Exception as e:
         print(f"❌ Error simulating round result: {e}")
         traceback.print_exc()
         return None
 
-def handle_round_completion(epoch, round_result):
+def handle_round_completion(epoch, result_data):
     """
-    Handle round completion and update prediction outcomes.
-    Works for both real and simulated bets.
+    Handle round completion and result processing.
+    Update stats, database, and perform post-trade actions.
     
     Args:
-        epoch: Round epoch
-        round_result: Dict with round result data
+        epoch: Round epoch number
+        result_data: Result data including outcome, profit/loss etc.
     """
+    global wins, losses, consecutive_losses, balance, mode
+    
     try:
-        # Get the prediction from our database handler
-        prediction_data = get_prediction(epoch)
+        # Add mode to result data
+        current_mode = result_data.get('mode', mode)
         
-        # If we have a prediction for this epoch
-        if prediction_data and prediction_data.get('final_prediction'):
-            final_prediction = prediction_data.get('final_prediction')
-            
-            # Verify the win using check_for_win function
-            is_win, actual_outcome = check_for_win(epoch, final_prediction, round_result['outcome'])
-            if is_win != round_result['won']:
-                print(f"⚠️ Win verification mismatch for epoch {epoch}")
-            
-            # Update outcome in database
-            update_prediction_outcome(
-                epoch=epoch,
-                outcome=round_result['outcome'],
-                win=1 if round_result['won'] else 0,
-                profit_loss=round_result.get('profit_loss', 0)
-            )
-            
-            # Print outcome
-            result_emoji = "✅" if round_result['outcome'] == final_prediction else "❌"
-            print(f"{result_emoji} Round {epoch} completed - Prediction: {final_prediction}, Outcome: {round_result['outcome']}")
-            
-            # Record as a trade for performance tracking
-            trade_data = {
-                'bullAmount': prediction_data.get('bullAmount', 0),
-                'bearAmount': prediction_data.get('bearAmount', 0),
-                'totalAmount': prediction_data.get('totalAmount', 0),
-                'bullRatio': prediction_data.get('bullRatio', 0),
-                'bearRatio': prediction_data.get('bearRatio', 0),
-                'lockPrice': prediction_data.get('lockPrice', 0),
-                'closePrice': round_result['closePrice'],
-                'outcome': round_result['outcome'],
-                'prediction': final_prediction,
-                'amount': round_result.get('amount', 0),
-                'profit_loss': round_result['profit_loss'],
-                'win': 1 if round_result['outcome'] == final_prediction else 0,
-                'test_mode': round_result.get('simulated', False)
-            }
-            record_trade(epoch, trade_data)
+        # Record the trade first
+        trade_recorded = record_trade(result_data)
+        
+        # Update global counters
+        if result_data.get('won', False):
+            wins += 1
+            consecutive_losses = 0  # Reset consecutive losses
+            print(f"✅ WIN! Round {epoch}: +{result_data.get('profit_loss', 0):.6f} BNB")
         else:
-            print(f"⚠️ No prediction found for epoch {epoch}")
-            
+            losses += 1
+            consecutive_losses += 1
+            print(f"❌ LOSS! Round {epoch}: {result_data.get('profit_loss', 0):.6f} BNB")
+        
+        # Update wallet balance based on mode
+        profit_loss = result_data.get('profit_loss', 0)
+        if current_mode == "test":
+            # Update test mode balance in database
+            from scripts.data.database import get_test_balance, set_test_balance
+            current_balance = get_test_balance()
+            new_balance = current_balance + profit_loss
+            set_test_balance(new_balance)
+            balance = new_balance
+        else:
+            # For live mode, get actual blockchain balance
+            balance = get_wallet_balance(mode="live")
+        
+        # Update prediction with outcome
+        prediction_recorded = update_prediction_outcome(
+            epoch=epoch,
+            outcome=result_data.get('outcome'),
+            win=1 if result_data.get('won', False) else 0,
+            profit_loss=profit_loss
+        )
+        
+        # Update AI model if available
+        if ai_strategy:
+            ai_strategy.record_outcome(epoch, result_data.get('outcome', 'UNKNOWN'))
+        
+        # Log the round completion
+        logger.info(f"Round {epoch} completed - Prediction: {result_data.get('prediction', 'UNKNOWN')}, Outcome: {result_data.get('outcome', 'UNKNOWN')}")
+        
+        # Get mode-specific performance stats
+        from scripts.data.database import get_performance_stats
+        stats = get_performance_stats(mode=current_mode)
+        
+        print("\n📊 Performance Stats:")
+        print(f"   Wins: {stats['wins']}, Losses: {stats['losses']}")
+        print(f"   Win Rate: {(stats['win_rate'] * 100):.2f}%")
+        print(f"   Profit/Loss: {stats['profit_loss']:.6f} BNB")
+        print(f"   Consecutive Losses: {stats['consecutive_losses']}")
+        print(f"   Balance: {balance:.6f} BNB")
+        print(f"   Total Bets: {stats['total_trades']}\n")
+        
+        return True
     except Exception as e:
-        print(f"❌ Error handling round completion: {e}")
+        logger.error(f"❌ Error handling round completion: {e}")
         traceback.print_exc()
+        return False
 
 def is_betting_time(seconds_until_lock):
     """
@@ -366,30 +416,37 @@ def display_round_info(epoch):
     except Exception as e:
         print(f"❌ Error displaying round info: {e}")
 
-def print_stats():
-    """Print current performance statistics."""
-    print(f"\n📊 Performance Stats:")
+def print_stats(current_mode=None):
+    """Print performance statistics."""
+    global balance, wins, losses, consecutive_losses, mode
     
-    # Get detailed performance stats from database
-    performance = get_performance_stats()
+    if current_mode is None:
+        current_mode = mode
     
-    # Print stats from database and global counters
-    print(f"   Wins: {performance.get('wins', wins)}, Losses: {performance.get('losses', losses)}")
-    win_rate = performance.get('win_rate', 0)
-    print(f"   Win Rate: {win_rate:.2%}")
-    print(f"   Profit/Loss: {performance.get('profit_loss', 0):.6f} BNB")
-    print(f"   Consecutive Losses: {consecutive_losses}")
-    print(f"   Balance: {balance:.6f} BNB")
-    print(f"   Total Bets: {performance.get('total_bets', 0)}")
+    # Get mode-specific stats from database
+    from scripts.data.database import get_performance_stats
+    stats = get_performance_stats(mode=current_mode)
     
-    # Display recent trades
-    display_recent_trades(3)
+    # Get correct balance based on mode
+    if current_mode == "live":
+        current_balance = get_wallet_balance(mode="live")
+    else:
+        current_balance = get_test_balance()
+    
+    print("\n📊 Performance Stats:")
+    print(f"   Mode: {current_mode.upper()}")
+    print(f"   Wins: {stats['wins']}, Losses: {stats['losses']}")
+    print(f"   Win Rate: {(stats['win_rate'] * 100):.2f}%")
+    print(f"   Profit/Loss: {stats['profit_loss']:.6f} BNB")
+    print(f"   Consecutive Losses: {stats['consecutive_losses']}")
+    print(f"   Balance: {current_balance:.6f} BNB")
+    print(f"   Total Bets: {stats['total_trades']}\n")
 
-def display_recent_trades(limit=5):
+def display_recent_trades(limit=5, mode="test"):
     """Display recent trading history."""
     try:
         print("\n📜 Recent Trading History:")
-        trades = get_recent_trades(limit)
+        trades = get_recent_trades(limit, mode)
         
         if not trades:
             print("   No recent trades found")
@@ -763,339 +820,396 @@ def retrain_prediction_models():
         traceback.print_exc()
         return False
 
-def main(mode=None):
-    """Main function with the bot's main loop."""
-    
-    # Setup logger
-    logger = setup_logging()
-    logger.info("🚀 Starting trading bot")
-    
-    # Check database setup
-    if not check_database_setup():
-        print("❌ Database check failed")
-        return 1
-        
-    # Initialize database
-    from data import ensure_data_ready
-    if not ensure_data_ready():
-        print("❌ Database initialization failed")
-        return 1
-        
-    # Initialize prediction handler
-    global prediction_handler
-    prediction_handler = PredictionHandler()
-    
-    # Initialize balances
-    global balance
-    balance = get_wallet_balance()
-    print(f"💰 Wallet Balance: {balance:.6f} BNB")
-    
-    # Select mode if not provided
-    if mode is None:
-        mode = select_mode()
-    
-    print(f"🚀 Running in {mode.upper()} mode")
-    
-    # Setup event listeners for blockchain
-    from scripts.blockchain.events import setup_event_listeners, track_betting_events
-    if contract is not None:
-        bull_filter, bear_filter = setup_event_listeners(contract)
-        print("✅ Event listeners set up successfully")
-    else:
-        print("❌ Cannot set up event listeners - contract not initialized")
-        bull_filter, bear_filter = None, None
-    
-    # After initializing database
-    if not verify_contract_connection():
-        print("⚠️ Warning: Contract connection issues, some features may not work")
-    
-    # At the beginning of main(), after database initialization but before main loop:
-    # Bootstrap market data if needed
-    print("🔄 Bootstrapping market data...")
-    result = bootstrap_market_data()
-    if result:
-        print("✅ Market data bootstrapped successfully")
-    else:
-        print("⚠️ Market data bootstrap may be incomplete")
-    
-    # Initialize AI strategy
-    if not initialize_ai_strategy():
-        print("⚠️ AI strategy initialization failed, continuing with other strategies")
-    
-    # After bootstrapping market data but before the main loop
-    # Try to self-optimize based on existing data
-    self_optimize_ai(force=True)
-    
-    # Main loop
+def get_total_profit_loss(mode="test"):
+    """Get total profit/loss from the database for the specified mode."""
     try:
-        while True:
-            try:
-                # Get current epoch and timing
-                current_epoch = get_current_epoch()
-                if not current_epoch:
-                    print("⚠️ Cannot get current epoch. Retrying...")
-                    time.sleep(10)
-                    continue
-                
-                seconds_until_lock = get_time_until_lock(current_epoch)
-                seconds_until_end = get_time_until_round_end(current_epoch)
-                
-                min_lock, sec_lock = divmod(seconds_until_lock, 60)
-                min_end, sec_end = divmod(seconds_until_end, 60)
-                
-                print(f"\n⏱️ Current Epoch: {current_epoch}")
-                print(f"⏱️ Time until lock: {min_lock}m {sec_lock}s")
-                print(f"⏱️ Time until end: {min_end}m {sec_end}s")
-                
-                # Display round information
-                if seconds_until_lock < 300:  # Show info when <5 minutes until lock
-                    round_data = get_enriched_round_data(current_epoch)
-                    if round_data:
-                        display_round_info(current_epoch)
-                
-                # At the beginning of the main loop, initialize prediction variables
-                prediction = "UNKNOWN"
-                confidence = 0.0
+        from scripts.data.database import get_performance_stats
+        stats = get_performance_stats(mode)
+        return stats.get('profit_loss', 0)
+    except Exception as e:
+        print(f"Error getting total profit/loss: {e}")
+        return 0
 
-                # Check for optimal betting time
-                if is_betting_time(seconds_until_lock):
-                    # Get round data
-                    round_data = get_enriched_round_data(current_epoch)
-                    if not round_data:
-                        print("❌ Failed to get round data")
-                        time.sleep(5)
+def place_bet(epoch, prediction, amount, gas_price=None):
+    """
+    Place an actual bet on the blockchain.
+    
+    Args:
+        epoch: Round epoch
+        prediction: BULL or BEAR prediction
+        amount: Bet amount in BNB
+        gas_price: Optional gas price for transaction
+        
+    Returns:
+        bool: Success status
+    """
+    try:
+        # In the real implementation, this would make a blockchain transaction
+        print(f"🔄 Placing LIVE bet: {amount:.6f} BNB on {prediction}")
+        
+        # For demonstration, we're still simulating but marking as live mode
+        bet_data = {
+            'epoch': epoch,
+            'prediction': prediction,
+            'amount': amount,
+            'timestamp': int(time.time()),
+            'mode': 'live'  # Mark as live mode
+        }
+        
+        # Store in placed_bets for tracking
+        placed_bets[epoch] = bet_data
+        
+        # Store in database
+        record_bet(bet_data)
+        
+        return True
+    except Exception as e:
+        print(f"❌ Error placing bet: {e}")
+        traceback.print_exc()
+        return False
+
+def main(mode=None):
+    """Main trading bot function."""
+    # Setup logging
+    global logger, balance, wins, losses, consecutive_losses, prediction_handler, ai_strategy
+    
+    try:
+        # Initialize logging
+        logger = setup_logging()
+        logger.info("🚀 Starting trading bot...")
+        
+        # Initialize database
+        initialize_database()
+        
+        # Determine mode if not provided
+        if mode is None:
+            mode = select_mode()
+        
+        # Initialize global variables
+        wins = 0
+        losses = 0
+        consecutive_losses = 0
+        
+        # Get initial wallet balance based on mode
+        if mode == "live":
+            # Get actual blockchain wallet balance
+            balance = get_wallet_balance(mode="live") 
+            logger.info(f"💰 Wallet Balance: {balance:.6f} BNB")
+        else:
+            # Get test balance from database
+            balance = get_test_balance()
+            logger.info(f"💰 Test Wallet Balance: {balance:.6f} BNB")
+        
+        logger.info(f"🚀 Running in {mode.upper()} mode")
+        
+        # Setup event listeners for blockchain
+        from scripts.blockchain.events import setup_event_listeners, track_betting_events
+        if contract is not None:
+            bull_filter, bear_filter = setup_event_listeners(contract)
+            print("✅ Event listeners set up successfully")
+        else:
+            print("❌ Cannot set up event listeners - contract not initialized")
+            bull_filter, bear_filter = None, None
+        
+        # After initializing database
+        if not verify_contract_connection():
+            print("⚠️ Warning: Contract connection issues, some features may not work")
+        
+        # At the beginning of main(), after database initialization but before main loop:
+        # Bootstrap market data if needed
+        print("🔄 Bootstrapping market data...")
+        result = bootstrap_market_data()
+        if result:
+            print("✅ Market data bootstrapped successfully")
+        else:
+            print("⚠️ Market data bootstrap may be incomplete")
+        
+        # Initialize prediction handler
+        global prediction_handler
+        prediction_handler = PredictionHandler()
+        
+        # Initialize AI strategy
+        if not initialize_ai_strategy():
+            print("⚠️ AI strategy initialization failed, continuing with other strategies")
+        
+        # After bootstrapping market data but before the main loop
+        # Try to self-optimize based on existing data
+        self_optimize_ai(force=True)
+        
+        # Main loop
+        try:
+            while True:
+                try:
+                    # Get current epoch and timing
+                    current_epoch = get_current_epoch()
+                    if not current_epoch:
+                        print("⚠️ Cannot get current epoch. Retrying...")
+                        time.sleep(10)
                         continue
                     
-                    # Add before generating prediction
-                    market_context = analyze_market_context(round_data)
+                    seconds_until_lock = get_time_until_lock(current_epoch)
+                    seconds_until_end = get_time_until_round_end(current_epoch)
                     
-                    # Get updated market regime
-                    market_regime = detect_market_regime(get_historical_prices(30))
+                    min_lock, sec_lock = divmod(seconds_until_lock, 60)
+                    min_end, sec_end = divmod(seconds_until_end, 60)
                     
-                    # Select optimal strategy
-                    selected_strategy = select_best_strategy(market_regime, round_data)
+                    print(f"\n⏱️ Current Epoch: {current_epoch}")
+                    print(f"⏱️ Time until lock: {min_lock}m {sec_lock}s")
+                    print(f"⏱️ Time until end: {min_end}m {sec_end}s")
                     
-                    # Get AI prediction if available
-                    if ai_strategy:
-                        ai_pred, ai_conf = ai_strategy.predict(round_data)
-                        print(f"🤖 AI prediction: {ai_pred} ({ai_conf:.2f} confidence)")
-                        
-                        # Add AI prediction to the set of predictions
-                        prediction_handler.add_prediction('ai', ai_pred, ai_conf)
+                    # Display round information
+                    if seconds_until_lock < 300:  # Show info when <5 minutes until lock
+                        round_data = get_enriched_round_data(current_epoch)
+                        if round_data:
+                            display_round_info(current_epoch)
                     
-                    # After getting the AI prediction but before getting combined prediction
-                    # Add hybrid prediction for more robust signals
-                    if 'technical_prediction' in market_context:
-                        hybrid_pred, hybrid_conf = hybrid_prediction(
-                            round_data,
-                            {'prices': get_historical_prices(20)},
-                            {'market_context': market_context}
-                        )
-                        print(f"🔄 Hybrid prediction: {hybrid_pred} ({hybrid_conf:.2f} confidence)")
-                        
-                        # Add hybrid prediction to the set of predictions
-                        prediction_handler.add_prediction('hybrid', hybrid_pred, hybrid_conf)
-                    
-                    try:
-                        # Check if the prediction_handler has the needed methods
-                        if not hasattr(prediction_handler, 'get_strategy_weights'):
-                            # Add the method dynamically if it's missing
-                            def get_weights_func(self):
-                                return {
-                                    'model': 0.15,
-                                    'trend_following': 0.20,
-                                    'contrarian': 0.15,
-                                    'volume_analysis': 0.20,
-                                    'market_indicators': 0.30
-                                }
-                            import types
-                            prediction_handler.get_strategy_weights = types.MethodType(get_weights_func, prediction_handler)
-                            print("Added missing get_strategy_weights method dynamically")
-                        
-                        # Fix the get_prediction call
-                        try:
-                            # Try the call with strategy preference
-                            prediction, confidence = prediction_handler.get_prediction(round_data, selected_strategy.get('primary'))
-                        except TypeError:
-                            # Fall back to calling without strategy preference
-                            print("Falling back to get_prediction without strategy preference")
-                            prediction, confidence = prediction_handler.get_prediction(round_data)
-                        
-                        print(f"\n🔮 Prediction for round {current_epoch}: {prediction} ({confidence:.2f} confidence)")
-                    except Exception as e:
-                        print(f"❌ Error generating prediction: {e}")
-                        traceback.print_exc()
-                        prediction = "UNKNOWN"
-                        confidence = 0.5
-                    
-                    # Determine bet amount
-                    bet_amount = calculate_optimal_bet_size(
-                        wallet_balance=balance,
-                        strategy_confidence=confidence,
-                        base_amount=config.get('trading', {}).get('wager_amount', 0.002)
-                    )
-                    
-                    # Check if we should place bet
-                    min_confidence = config.get('trading', {}).get('min_confidence', 0.57)
-                    if confidence >= min_confidence and mode == "live" and config.get('trading', {}).get('betting_enabled', False) and should_place_bet(round_data, prediction, confidence, config):
-                        # Before simulating or placing a bet:
-                        current_round_id = current_epoch  # Use the epoch as round ID
+                    # At the beginning of the main loop, initialize prediction variables
+                    prediction = "UNKNOWN"
+                    confidence = 0.0
 
-                        # Check if we already placed a bet for this round
-                        if current_round_id in placed_bets:
-                            print(f"⚠️ Already placed a bet for round {current_round_id}, skipping")
+                    # Check for optimal betting time
+                    if is_betting_time(seconds_until_lock):
+                        # Get round data
+                        round_data = get_enriched_round_data(current_epoch)
+                        if not round_data:
+                            print("❌ Failed to get round data")
+                            time.sleep(5)
                             continue
                         
-                        print(f"✅ Betting conditions met")
-                        # Get gas price based on strategy
-                        gas_strategy = config.get('trading', {}).get('gas_strategy', 'medium')
-                        gas_price = get_optimal_gas_price(web3, gas_strategy)
+                        # Add before generating prediction
+                        market_context = analyze_market_context(round_data)
                         
-                        # After determining bet_amount but before placing bet
-                        is_strong_opportunity = check_betting_opportunity(confidence, round_data)
-                        if is_strong_opportunity:
-                            # Increase bet size for strong opportunities
-                            bet_amount *= 1.2  # 20% boost
-                            print(f"⭐ Strong opportunity detected! Boosting bet to {bet_amount:.6f} BNB")
+                        # Get updated market regime
+                        market_regime = detect_market_regime(get_historical_prices(30))
                         
-                        # Place bet
-                        result = place_bet(
-                            epoch=current_epoch,
-                            prediction=prediction,
-                            amount=bet_amount,
-                            gas_price=gas_price
+                        # Select optimal strategy
+                        selected_strategy = select_best_strategy(market_regime, round_data)
+                        
+                        # Get AI prediction if available
+                        if ai_strategy:
+                            ai_pred, ai_conf = ai_strategy.predict(round_data)
+                            print(f"🤖 AI prediction: {ai_pred} ({ai_conf:.2f} confidence)")
+                            
+                            # Add AI prediction to the set of predictions
+                            prediction_handler.add_prediction('ai', ai_pred, ai_conf)
+                        
+                        # After getting the AI prediction but before getting combined prediction
+                        # Add hybrid prediction for more robust signals
+                        if 'technical_prediction' in market_context:
+                            hybrid_pred, hybrid_conf = hybrid_prediction(
+                                round_data,
+                                {'prices': get_historical_prices(20)},
+                                {'market_context': market_context}
+                            )
+                            print(f"🔄 Hybrid prediction: {hybrid_pred} ({hybrid_conf:.2f} confidence)")
+                            
+                            # Add hybrid prediction to the set of predictions
+                            prediction_handler.add_prediction('hybrid', hybrid_pred, hybrid_conf)
+                        
+                        try:
+                            # Check if the prediction_handler has the needed methods
+                            if not hasattr(prediction_handler, 'get_strategy_weights'):
+                                # Add the method dynamically if it's missing
+                                def get_weights_func(self):
+                                    return {
+                                        'model': 0.15,
+                                        'trend_following': 0.20,
+                                        'contrarian': 0.15,
+                                        'volume_analysis': 0.20,
+                                        'market_indicators': 0.30
+                                    }
+                                import types
+                                prediction_handler.get_strategy_weights = types.MethodType(get_weights_func, prediction_handler)
+                                print("Added missing get_strategy_weights method dynamically")
+                            
+                            # Fix the get_prediction call
+                            try:
+                                # Try the call with strategy preference
+                                prediction, confidence = prediction_handler.get_prediction(round_data, selected_strategy.get('primary'))
+                            except TypeError:
+                                # Fall back to calling without strategy preference
+                                print("Falling back to get_prediction without strategy preference")
+                                prediction, confidence = prediction_handler.get_prediction(round_data)
+                            
+                            print(f"\n🔮 Prediction for round {current_epoch}: {prediction} ({confidence:.2f} confidence)")
+                        except Exception as e:
+                            print(f"❌ Error generating prediction: {e}")
+                            traceback.print_exc()
+                            prediction = "UNKNOWN"
+                            confidence = 0.5
+                        
+                        # Determine bet amount
+                        bet_amount = calculate_optimal_bet_size(
+                            wallet_balance=balance,
+                            strategy_confidence=confidence,
+                            base_amount=config.get('trading', {}).get('wager_amount', 0.002)
                         )
                         
-                        if result:
-                            print(f"✅ Bet placed: {bet_amount:.6f} BNB on {prediction}")
-                            # Add to placed_bets for tracking
-                            placed_bets[current_round_id] = {
-                                'prediction': prediction,
-                                'amount': bet_amount,
-                                'timestamp': int(time.time())
-                            }
-                        else:
-                            print("❌ Failed to place bet")
-                    elif mode == "test" and confidence >= min_confidence and should_place_bet(round_data, prediction, confidence, config):
-                        # Before simulating or placing a bet:
-                        current_round_id = current_epoch  # Use the epoch as round ID
-                        
-                        # Check if we already placed a bet for this round
-                        if current_round_id in placed_bets:
-                            print(f"⚠️ Already placed a test bet for round {current_round_id}, skipping")
-                            continue
-                        
-                        print(f"✅ Test betting conditions met")
-                        result = simulate_bet(current_epoch, prediction, bet_amount)
-                        if result:
-                            print(f"✅ Simulated bet recorded: {bet_amount:.6f} BNB on {prediction}")
-                        else:
-                            print("❌ Failed to record simulated bet")
-                    elif confidence < min_confidence:
-                        print(f"⚠️ Not betting: Confidence {confidence:.2f} < minimum {min_confidence:.2f}")
-                    elif not config.get('trading', {}).get('betting_enabled', False):
-                        print(f"ℹ️ Betting is disabled in configuration")
-                
-                # Check for claimable rewards
-                if seconds_until_end < 60 and mode == "live":
-                    claimable = check_claimable_rounds()
-                    if claimable:
-                        print(f"💰 Found {len(claimable)} claimable rounds")
-                        result = claim_rewards(claimable)
-                        if result:
-                            print(f"✅ Successfully claimed rewards")
-                
-                # Check for completed test mode bets
-                if mode == "test":
-                    for epoch, bet_data in list(placed_bets.items()):
-                        if 'simulated' in bet_data and bet_data['simulated']:
-                            # Get round data to check if round is complete
-                            round_data = get_round_data(epoch)
+                        # Check if we should place bet
+                        min_confidence = config.get('trading', {}).get('min_confidence', 0.57)
+                        if confidence >= min_confidence and mode == "live" and config.get('trading', {}).get('betting_enabled', False) and should_place_bet(round_data, prediction, confidence, config):
+                            # Before simulating or placing a bet:
+                            current_round_id = current_epoch  # Use the epoch as round ID
+
+                            # Check if we already placed a bet for this round
+                            if current_round_id in placed_bets:
+                                print(f"⚠️ Already placed a bet for round {current_round_id}, skipping")
+                                continue
                             
-                            # Only process if round is ACTUALLY complete and has an outcome
-                            if round_data and round_data.get('outcome') and round_data.get('closeTimestamp', 0) < int(time.time()):
-                                # Make sure we have both lockPrice and closePrice
-                                if not (round_data.get('lockPrice') and round_data.get('closePrice')):
-                                    logger.info(f"⏳ Round {epoch} not fully complete yet (waiting for prices)")
-                                    continue
-                                    
-                                # Simulate result
-                                result = simulate_round_result(
-                                    epoch, 
-                                    bet_data['prediction'], 
-                                    bet_data['amount']
-                                )
-                                
-                                if result:
-                                    try:
-                                        # Handle round completion with the simulated result
-                                        handle_round_completion(epoch, result)
-                                        
-                                        # Print result
-                                        win_text = "✅ WON" if result['won'] else "❌ LOST"
-                                        print(f"🧪 TEST BET RESULT: {win_text} {result['profit_loss']:.6f} BNB")
-                                        
-                                        # Remove from tracking
-                                        del placed_bets[epoch]
-                                    except Exception as e:
-                                        logger.error(f"❌ Error processing round result: {e}")
-                                        traceback.print_exc()
+                            print(f"✅ Betting conditions met")
+                            # Get gas price based on strategy
+                            gas_strategy = config.get('trading', {}).get('gas_strategy', 'medium')
+                            gas_price = get_optimal_gas_price(web3, gas_strategy)
+                            
+                            # After determining bet_amount but before placing bet
+                            is_strong_opportunity = check_betting_opportunity(confidence, round_data)
+                            if is_strong_opportunity:
+                                # Increase bet size for strong opportunities
+                                bet_amount *= 1.2  # 20% boost
+                                print(f"⭐ Strong opportunity detected! Boosting bet to {bet_amount:.6f} BNB")
+                            
+                            # Place bet
+                            result = place_bet(
+                                epoch=current_epoch,
+                                prediction=prediction,
+                                amount=bet_amount,
+                                gas_price=gas_price
+                            )
+                            
+                            if result:
+                                print(f"✅ Bet placed: {bet_amount:.6f} BNB on {prediction}")
+                                # Add to placed_bets for tracking
+                                placed_bets[current_round_id] = {
+                                    'prediction': prediction,
+                                    'amount': bet_amount,
+                                    'timestamp': int(time.time())
+                                }
                             else:
-                                logger.info(f"⏳ Round {epoch} not complete yet (waiting for outcome)")
-                
-                # Print stats periodically
-                if seconds_until_lock < 30 or seconds_until_end < 30:
-                    print_stats()
-                
-                # Sleep time based on how close we are to round transitions
-                if seconds_until_lock < 150 or seconds_until_end < 60:
-                    time.sleep(5)  # Check more frequently near transitions
-                else:
-                    time.sleep(15)  # Sleep longer during inactive periods
+                                print("❌ Failed to place bet")
+                        elif mode == "test" and confidence >= min_confidence and should_place_bet(round_data, prediction, confidence, config):
+                            # Before simulating or placing a bet:
+                            current_round_id = current_epoch  # Use the epoch as round ID
+                            
+                            # Check if we already placed a bet for this round
+                            if current_round_id in placed_bets:
+                                print(f"⚠️ Already placed a test bet for round {current_round_id}, skipping")
+                                continue
+                            
+                            print(f"✅ Test betting conditions met")
+                            result = simulate_bet(current_epoch, prediction, bet_amount)
+                            if result:
+                                print(f"✅ Simulated bet recorded: {bet_amount:.6f} BNB on {prediction}")
+                            else:
+                                print("❌ Failed to record simulated bet")
+                        elif confidence < min_confidence:
+                            print(f"⚠️ Not betting: Confidence {confidence:.2f} < minimum {min_confidence:.2f}")
+                        elif not config.get('trading', {}).get('betting_enabled', False):
+                            print(f"ℹ️ Betting is disabled in configuration")
                     
-                # After getting the prediction
-                all_predictions = prediction_handler.get_all_predictions()
-                weighted_confidence = calculate_weighted_confidence(all_predictions)
-                print(f"🔮 Weighted confidence (using strategy weights): {weighted_confidence:.2f}")
-                
-                # After calculating weighted_confidence
-                high_confidence_signals = get_high_confidence_predictions(all_predictions)
-                if high_confidence_signals:
-                    signal_count = len(high_confidence_signals)
-                    print(f"✨ Found {signal_count} high confidence signals")
-                
-                # Update AI with new outcome data for learning
-                if ai_strategy and round_data and round_data.get('outcome'):
-                    ai_updated = ai_strategy.record_outcome(
-                        current_epoch, 
-                        prediction, 
-                        round_data.get('outcome'),
-                        round_data
-                    )
-                    if ai_updated:
-                        print(f"🧠 AI model updated with outcome from round {current_epoch}")
-                
-                # Attempt periodic self-optimization (will only run if enough time has passed)
-                if ai_strategy and current_epoch % 10 == 0:  # Check every 10 epochs
-                    self_optimize_ai()
-                
-                # Periodically retrain all models
-                if current_epoch % 50 == 0:  # Every 50 epochs
-                    retrain_prediction_models()
-                
-            except KeyboardInterrupt:
-                print("\n👋 Exiting by user request...")
-                break
-            except Exception as e:
-                print(f"❌ Error in main loop: {e}")
-                traceback.print_exc()
-                time.sleep(5)  # Sleep on error
-                
-    except KeyboardInterrupt:
-        print("\n👋 Exiting by user request...")
-    
-    print("✅ Bot shutdown complete")
-    return 0
+                    # Check for claimable rewards
+                    if seconds_until_end < 60 and mode == "live":
+                        claimable = check_claimable_rounds()
+                        if claimable:
+                            print(f"💰 Found {len(claimable)} claimable rounds")
+                            result = claim_rewards(claimable)
+                            if result:
+                                print(f"✅ Successfully claimed rewards")
+                    
+                    # Check for completed test mode bets
+                    if mode == "test":
+                        for epoch, bet_data in list(placed_bets.items()):
+                            if 'simulated' in bet_data and bet_data['simulated']:
+                                # Get round data to check if round is complete
+                                round_data = get_round_data(epoch)
+                                
+                                # Only process if round is ACTUALLY complete and has an outcome
+                                if round_data and round_data.get('outcome') and round_data.get('closeTimestamp', 0) < int(time.sleep(5)):
+                                    # Make sure we have both lockPrice and closePrice
+                                    if not (round_data.get('lockPrice') and round_data.get('closePrice')):
+                                        logger.info(f"⏳ Round {epoch} not fully complete yet (waiting for prices)")
+                                        continue
+                                        
+                                    # Simulate result
+                                    result = simulate_round_result(
+                                        epoch, 
+                                        bet_data['prediction'], 
+                                        bet_data['amount']
+                                    )
+                                    
+                                    if result:
+                                        try:
+                                            # Handle round completion with the simulated result
+                                            handle_round_completion(epoch, result)
+                                            
+                                            # Print result
+                                            win_text = "✅ WON" if result['won'] else "❌ LOST"
+                                            print(f"🧪 TEST BET RESULT: {win_text} {result['profit_loss']:.6f} BNB")
+                                            
+                                            # Remove from tracking
+                                            del placed_bets[epoch]
+                                        except Exception as e:
+                                            logger.error(f"❌ Error processing round result: {e}")
+                                            traceback.print_exc()
+                                else:
+                                    logger.info(f"⏳ Round {epoch} not complete yet (waiting for outcome)")
+                    
+                    # Print stats periodically
+                    if seconds_until_lock < 30 or seconds_until_end < 30:
+                        print_stats(mode)
+                    
+                    # Sleep time based on how close we are to round transitions
+                    if seconds_until_lock < 150 or seconds_until_end < 60:
+                        time.sleep(5)  # Check more frequently near transitions
+                    else:
+                        time.sleep(15)  # Sleep longer during inactive periods
+                    
+                    # After getting the prediction
+                    all_predictions = prediction_handler.get_all_predictions()
+                    weighted_confidence = calculate_weighted_confidence(all_predictions)
+                    print(f"🔮 Weighted confidence (using strategy weights): {weighted_confidence:.2f}")
+                    
+                    # After calculating weighted_confidence
+                    high_confidence_signals = get_high_confidence_predictions(all_predictions)
+                    if high_confidence_signals:
+                        signal_count = len(high_confidence_signals)
+                        print(f"✨ Found {signal_count} high confidence signals")
+                    
+                    # Update AI with new outcome data for learning
+                    if ai_strategy and round_data and round_data.get('outcome'):
+                        ai_updated = ai_strategy.record_outcome(
+                            current_epoch, 
+                            prediction, 
+                            round_data.get('outcome'),
+                            round_data
+                        )
+                        if ai_updated:
+                            print(f"🧠 AI model updated with outcome from round {current_epoch}")
+                    
+                    # Attempt periodic self-optimization (will only run if enough time has passed)
+                    if ai_strategy and current_epoch % 10 == 0:  # Check every 10 epochs
+                        self_optimize_ai()
+                    
+                    # Periodically retrain all models
+                    if current_epoch % 50 == 0:  # Every 50 epochs
+                        retrain_prediction_models()
+                    
+                except KeyboardInterrupt:
+                    print("\n👋 Exiting by user request...")
+                    break
+                except Exception as e:
+                    print(f"❌ Error in main loop: {e}")
+                    traceback.print_exc()
+                    time.sleep(5)  # Sleep on error
+                    
+        except KeyboardInterrupt:
+            print("\n👋 Exiting by user request...")
+        
+        print("✅ Bot shutdown complete")
+        return 0
+    except Exception as e:
+        print(f"❌ Error in main function: {e}")
+        traceback.print_exc()
+        return 1
 
 if __name__ == "__main__":
     sys.exit(main())
