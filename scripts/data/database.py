@@ -1559,8 +1559,8 @@ def get_performance_stats():
                 SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END) as wins,
                 SUM(CASE WHEN win = 0 THEN 1 ELSE 0 END) as losses,
                 SUM(profit_loss) as total_profit_loss
-            FROM {TABLES['predictions']}
-            WHERE bet_amount > 0 AND actual_outcome IS NOT NULL
+            FROM {TABLES['trades']}
+            WHERE amount > 0 AND outcome IS NOT NULL
         ''')
         
         result = cursor.fetchone()
@@ -1568,8 +1568,8 @@ def get_performance_stats():
         # Get most recent consecutive losses
         cursor.execute(f'''
             SELECT win
-            FROM {TABLES['predictions']}
-            WHERE bet_amount > 0 AND actual_outcome IS NOT NULL
+            FROM {TABLES['trades']}
+            WHERE amount > 0 AND outcome IS NOT NULL
             ORDER BY epoch DESC
             LIMIT 10
         ''')
@@ -2423,3 +2423,67 @@ def get_market_balance(lookback=20):
             'total_bull': 0,
             'total_bear': 0
         } 
+
+def get_test_balance():
+    """Get the current test mode balance."""
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        
+        # Create test_balance table if it doesn't exist
+        cursor.execute(f"""
+            CREATE TABLE IF NOT EXISTS {TABLES.get('settings', 'settings')} (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            )
+        """)
+        
+        # Get test balance
+        cursor.execute(f"""
+            SELECT value FROM {TABLES.get('settings', 'settings')}
+            WHERE key = 'test_balance'
+        """)
+        
+        result = cursor.fetchone()
+        conn.close()
+        
+        if result:
+            return float(result[0])
+        else:
+            # Initialize with default
+            set_test_balance(1.0)
+            return 1.0
+            
+    except Exception as e:
+        logger.error(f"❌ Error getting test balance: {e}")
+        traceback.print_exc()
+        return 1.0
+
+def set_test_balance(balance):
+    """Update the test mode balance."""
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        
+        # Create test_balance table if it doesn't exist
+        cursor.execute(f"""
+            CREATE TABLE IF NOT EXISTS {TABLES.get('settings', 'settings')} (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            )
+        """)
+        
+        # Update test balance
+        cursor.execute(f"""
+            INSERT OR REPLACE INTO {TABLES.get('settings', 'settings')} (key, value)
+            VALUES ('test_balance', ?)
+        """, (str(balance),))
+        
+        conn.commit()
+        conn.close()
+        return True
+            
+    except Exception as e:
+        logger.error(f"❌ Error setting test balance: {e}")
+        traceback.print_exc()
+        return False

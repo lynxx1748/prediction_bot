@@ -74,6 +74,7 @@ from models.func_hybrid import hybrid_prediction
 from models.func_ta import TechnicalAnalysis
 from models.func_ai_strategy import AIStrategy
 from scripts.diagnosis.check_data_flow import start_monitoring
+from scripts.data.database import get_test_balance
 
 # Start monitoring (checks every 5 minutes by default)
 start_monitoring()
@@ -137,16 +138,55 @@ def select_mode():
             print(f"Error: {e}")
             return "test"
 
-def get_wallet_balance():
-    """Get wallet balance."""
+def get_wallet_balance(mode="test"):
+    """
+    Get wallet balance based on mode.
+    
+    Args:
+        mode: "live" to get real blockchain balance, "test" for simulated balance
+        
+    Returns:
+        float: Wallet balance in BNB
+    """
     try:
-        # This would normally check the actual wallet balance
-        # For now, return a placeholder value
-        # In the actual implementation, this would call web3.eth.get_balance
-        return 1.0  # Placeholder
+        if mode == "live":
+            # Get real balance from blockchain
+            from web3 import Web3
+            from scripts.core.constants import web3, config
+            
+            # Get wallet address from config
+            wallet_address = config.get('wallet', {}).get('address')
+            if not wallet_address:
+                print("⚠️ No wallet address configured, using test balance")
+                return get_test_balance()
+                
+            # Convert address to checksum format
+            try:
+                checksummed_address = Web3.to_checksum_address(wallet_address)
+                print(f"✅ Using checksummed wallet address: {checksummed_address}")
+            except Exception as e:
+                print(f"❌ Error converting wallet address to checksum format: {e}")
+                print(f"⚠️ Falling back to test balance")
+                return get_test_balance()
+                
+            # Get balance from blockchain
+            try:
+                balance_wei = web3.eth.get_balance(checksummed_address)
+                balance_bnb = Web3.from_wei(balance_wei, 'ether')
+                
+                print(f"💰 Live wallet balance: {balance_bnb:.6f} BNB")
+                return float(balance_bnb)
+            except Exception as e:
+                print(f"❌ Error getting blockchain balance: {e}")
+                print(f"⚠️ Falling back to test balance")
+                return get_test_balance()
+        else:
+            # Return test balance
+            return get_test_balance()  # Use database-stored test balance
     except Exception as e:
-        print(f"Error getting wallet balance: {e}")
-        return 0.0
+        print(f"❌ Error getting wallet balance: {e}")
+        traceback.print_exc()
+        return get_test_balance()  # Fallback to test balance
 
 def check_claimable_rounds():
     """Check for claimable rounds."""
@@ -331,6 +371,15 @@ def handle_round_completion(epoch, round_result):
                 'test_mode': round_result.get('simulated', False)
             }
             record_trade(epoch, trade_data)
+            
+            # Update wallet balance based on mode
+            mode = "live" if "live" in locals() else "test"
+            if mode == "live":
+                # For live mode, get actual blockchain balance
+                balance = get_wallet_balance(mode="live")
+            else:
+                # For test mode, update based on recorded profit/loss
+                balance = get_test_balance()
         else:
             print(f"⚠️ No prediction found for epoch {epoch}")
             
@@ -792,7 +841,7 @@ def main(mode=None):
     
     # Initialize balances
     global balance
-    balance = get_wallet_balance()
+    balance = get_wallet_balance(mode)
     print(f"💰 Wallet Balance: {balance:.6f} BNB")
     
     # Select mode if not provided
