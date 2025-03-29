@@ -81,7 +81,7 @@ def log_prediction_details(epoch, predictions, final_prediction, outcome=None):
     except Exception as e:
         logger.error(f"❌ Error logging prediction details: {e}")
 
-def setup_logging(log_level=logging.INFO, log_file=None):
+def setup_logging(log_level=logging.INFO, log_file='logs/bot.log'):
     """
     Setup logging configuration for the application
     
