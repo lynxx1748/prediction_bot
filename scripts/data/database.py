@@ -1541,105 +1541,66 @@ def get_prediction(epoch):
         logging.error(f"Error getting prediction: {e}")
         return None 
 
-def get_performance_stats(mode=None):
+def get_performance_stats():
     """
-    Get performance statistics from the database.
+    Get comprehensive performance statistics for the bot.
     
-    Args:
-        mode: Optional filter by mode (live/test)
-        
     Returns:
-        dict: Performance statistics
+        dict: Dictionary containing performance metrics
     """
     try:
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
         
-        # Build the query with optional mode filter
-        mode_filter = "WHERE mode = ?" if mode else ""
-        query_params = (mode,) if mode else ()
-        
-        # Get total wins and losses
-        cursor.execute(f"""
+        # Get win/loss statistics
+        cursor.execute(f'''
             SELECT 
-                COUNT(CASE WHEN win = 1 THEN 1 END) as wins,
-                COUNT(CASE WHEN win = 0 THEN 1 END) as losses,
-                SUM(profit_loss) as total_profit_loss,
-                COUNT(*) as total_trades
-            FROM {TABLES['trades']}
-            {mode_filter}
-        """, query_params)
+                COUNT(*) as total_bets,
+                SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END) as wins,
+                SUM(CASE WHEN win = 0 THEN 1 ELSE 0 END) as losses,
+                SUM(profit_loss) as total_profit_loss
+            FROM {TABLES['predictions']}
+            WHERE bet_amount > 0 AND actual_outcome IS NOT NULL
+        ''')
         
-        stats = cursor.fetchone()
+        result = cursor.fetchone()
         
-        if not stats:
-            return {
-                'wins': 0, 
-                'losses': 0, 
-                'total_trades': 0,
-                'win_rate': 0, 
-                'profit_loss': 0
-            }
-            
-        wins, losses, profit_loss, total_trades = stats
-        wins = wins or 0
-        losses = losses or 0
-        profit_loss = profit_loss or 0
-        total_trades = total_trades or 0
+        # Get most recent consecutive losses
+        cursor.execute(f'''
+            SELECT win
+            FROM {TABLES['predictions']}
+            WHERE bet_amount > 0 AND actual_outcome IS NOT NULL
+            ORDER BY epoch DESC
+            LIMIT 10
+        ''')
         
-        # Calculate win rate
-        win_rate = wins / total_trades if total_trades > 0 else 0
-        
-        # Get streak information
-        cursor.execute(f"""
-            SELECT 
-                MAX(win_streak) as max_win_streak,
-                MAX(loss_streak) as max_loss_streak
-            FROM (
-                SELECT 
-                    SUM(CASE WHEN win = 1 THEN 1 ELSE 0 END) OVER 
-                        (ORDER BY epoch ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as win_streak,
-                    SUM(CASE WHEN win = 0 THEN 1 ELSE 0 END) OVER 
-                        (ORDER BY epoch ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as loss_streak
-                FROM {TABLES['trades']}
-                {mode_filter}
-            )
-        """, query_params)
-        
-        streak_stats = cursor.fetchone()
-        max_win_streak, max_loss_streak = streak_stats if streak_stats else (0, 0)
-        
-        # Get consecutive losses (most recent consecutive losses)
-        cursor.execute(f"""
-            SELECT COUNT(*) 
-            FROM (
-                SELECT epoch, win
-                FROM {TABLES['trades']}
-                {mode_filter}
-                ORDER BY epoch DESC
-                LIMIT 20
-            )
-            WHERE win = 0
-            AND epoch >= (
-                SELECT COALESCE(MAX(epoch), 0)
-                FROM {TABLES['trades']}
-                {mode_filter}
-                WHERE win = 1
-            )
-        """, query_params)
-        
-        consecutive_losses = cursor.fetchone()[0] or 0
+        recent_results = cursor.fetchall()
         
         conn.close()
         
+        # Calculate statistics
+        total_bets = result[0] if result[0] else 0
+        wins = result[1] if result[1] else 0
+        losses = result[2] if result[2] else 0
+        profit_loss = result[3] if result[3] else 0
+        
+        # Calculate win rate
+        win_rate = wins / total_bets if total_bets > 0 else 0
+        
+        # Calculate consecutive losses
+        consecutive_losses = 0
+        for win_result in recent_results:
+            if win_result[0] == 0:  # Loss
+                consecutive_losses += 1
+            else:
+                break
+                
         return {
+            'total_bets': total_bets,
             'wins': wins,
             'losses': losses,
-            'total_trades': total_trades,
             'win_rate': win_rate,
             'profit_loss': profit_loss,
-            'max_win_streak': max_win_streak or 0,
-            'max_loss_streak': max_loss_streak or 0,
             'consecutive_losses': consecutive_losses
         }
         
@@ -1647,59 +1608,128 @@ def get_performance_stats(mode=None):
         logger.error(f"❌ Error getting performance stats: {e}")
         traceback.print_exc()
         return {
-            'wins': 0, 
-            'losses': 0, 
-            'total_trades': 0,
-            'win_rate': 0, 
+            'total_bets': 0,
+            'wins': 0,
+            'losses': 0,
+            'win_rate': 0,
             'profit_loss': 0,
             'consecutive_losses': 0
-        }
+        } 
 
-def record_trade(trade_data):
-    """Record a completed trade in the database."""
+def record_trade(epoch, trade_data):
+    """
+    Record a trade to the database with proper type conversion.
+    
+    Args:
+        epoch: Round epoch
+        trade_data: Dictionary containing trade data
+        
+    Returns:
+        bool: Success status
+    """
     try:
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
         
-        # Ensure the mode field exists
+        # Check if table exists
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (TABLES['trades'],))
+        if not cursor.fetchone():
+            # Create table with all necessary columns
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS {TABLES['trades']} (
+                    epoch INTEGER PRIMARY KEY,
+                    timestamp INTEGER,
+                    datetime TEXT,
+                    startTime INTEGER,
+                    lockTime INTEGER,
+                    closeTime INTEGER,
+                    lockPrice REAL,
+                    closePrice REAL,
+                    bullAmount REAL,
+                    bearAmount REAL,
+                    totalAmount REAL,
+                    bullRatio REAL,
+                    bearRatio REAL,
+                    outcome TEXT,
+                    prediction TEXT,
+                    amount REAL,
+                    profit_loss REAL,
+                    win INTEGER
+                )
+            ''')
+            conn.commit()
+        
+        # Prepare data, ensuring epoch is passed correctly and types are converted
+        trade_data_with_epoch = {}
+        
+        # Add the epoch
+        trade_data_with_epoch['epoch'] = epoch
+        
+        # Add current timestamp if not present
+        if 'timestamp' not in trade_data or not trade_data.get('timestamp'):
+            trade_data_with_epoch['timestamp'] = int(time.time())
+        else:
+            trade_data_with_epoch['timestamp'] = int(trade_data.get('timestamp', 0))
+            
+        # Add formatted datetime for readability
+        trade_data_with_epoch['datetime'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Copy and convert numeric fields
+        for field in ['startTime', 'lockTime', 'closeTime']:
+            if field in trade_data:
+                try:
+                    trade_data_with_epoch[field] = int(trade_data[field])
+                except (ValueError, TypeError):
+                    trade_data_with_epoch[field] = 0
+                    
+        for field in ['lockPrice', 'closePrice', 'bullAmount', 'bearAmount', 
+                     'totalAmount', 'bullRatio', 'bearRatio', 'amount', 'profit_loss']:
+            if field in trade_data:
+                try:
+                    trade_data_with_epoch[field] = float(trade_data[field])
+                except (ValueError, TypeError):
+                    trade_data_with_epoch[field] = 0.0
+        
+        # Copy text fields
+        for field in ['outcome', 'prediction']:
+            if field in trade_data:
+                trade_data_with_epoch[field] = str(trade_data[field]) if trade_data[field] else None
+        
+        # Handle win field separately
+        if 'win' in trade_data:
+            try:
+                trade_data_with_epoch['win'] = int(trade_data['win'])
+            except (ValueError, TypeError):
+                trade_data_with_epoch['win'] = 0
+        
+        # Get the columns that exist in the table
         cursor.execute(f"PRAGMA table_info({TABLES['trades']})")
         columns = [col[1] for col in cursor.fetchall()]
         
-        if 'mode' not in columns:
-            cursor.execute(f"ALTER TABLE {TABLES['trades']} ADD COLUMN mode TEXT")
-            conn.commit()
-            logger.info("Added mode column to trades table")
+        # Create column list and placeholders for SQL (only including columns that exist in table)
+        valid_columns = [col for col in trade_data_with_epoch.keys() if col in columns]
+        placeholders = ','.join(['?' for _ in valid_columns])
         
-        # Insert the trade data with mode
-        cursor.execute(f'''
+        # Create SQL statement
+        sql = f'''
             INSERT OR REPLACE INTO {TABLES['trades']} 
-            (epoch, timestamp, startTime, lockTime, closeTime, lockPrice, closePrice, 
-            totalAmount, bullAmount, bearAmount, bullRatio, bearRatio, outcome,
-            prediction, amount, profit_loss, win, mode)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            trade_data.get('epoch'),
-            trade_data.get('timestamp', int(time.time())),
-            trade_data.get('startTime'),
-            trade_data.get('lockTime'),
-            trade_data.get('closeTime'), 
-            trade_data.get('lockPrice'),
-            trade_data.get('closePrice'),
-            trade_data.get('totalAmount'),
-            trade_data.get('bullAmount'),
-            trade_data.get('bearAmount'),
-            trade_data.get('bullRatio'),
-            trade_data.get('bearRatio'),
-            trade_data.get('outcome'),
-            trade_data.get('prediction'),
-            trade_data.get('amount'),
-            trade_data.get('profit_loss'),
-            1 if trade_data.get('win') else 0,
-            trade_data.get('mode', 'test')  # Add mode field
-        ))
+            ({','.join(valid_columns)})
+            VALUES ({placeholders})
+        '''
         
+        # Create values tuple in same order as columns
+        values = tuple(trade_data_with_epoch.get(col) for col in valid_columns)
+        
+        # Print values for debugging
+        print("SQL Values:", values)
+        print("SQL Types:", [type(v).__name__ for v in values])
+        
+        # Execute the insert
+        cursor.execute(sql, values)
         conn.commit()
         conn.close()
+        
+        logger.info(f"✅ Recorded trade for epoch {epoch}")
         return True
     except Exception as e:
         logger.error(f"❌ Error recording trade: {e}")
@@ -2393,67 +2423,3 @@ def get_market_balance(lookback=20):
             'total_bull': 0,
             'total_bear': 0
         } 
-
-def get_test_balance():
-    """Get the current test mode balance."""
-    try:
-        conn = sqlite3.connect(DB_FILE)
-        cursor = conn.cursor()
-        
-        # Create test_balance table if it doesn't exist
-        cursor.execute(f"""
-            CREATE TABLE IF NOT EXISTS {TABLES.get('settings', 'settings')} (
-                key TEXT PRIMARY KEY,
-                value TEXT
-            )
-        """)
-        
-        # Get test balance
-        cursor.execute(f"""
-            SELECT value FROM {TABLES.get('settings', 'settings')}
-            WHERE key = 'test_balance'
-        """)
-        
-        result = cursor.fetchone()
-        conn.close()
-        
-        if result:
-            return float(result[0])
-        else:
-            # Initialize with default
-            set_test_balance(1.0)
-            return 1.0
-            
-    except Exception as e:
-        logger.error(f"❌ Error getting test balance: {e}")
-        traceback.print_exc()
-        return 1.0
-
-def set_test_balance(balance):
-    """Update the test mode balance."""
-    try:
-        conn = sqlite3.connect(DB_FILE)
-        cursor = conn.cursor()
-        
-        # Create test_balance table if it doesn't exist
-        cursor.execute(f"""
-            CREATE TABLE IF NOT EXISTS {TABLES.get('settings', 'settings')} (
-                key TEXT PRIMARY KEY,
-                value TEXT
-            )
-        """)
-        
-        # Update test balance
-        cursor.execute(f"""
-            INSERT OR REPLACE INTO {TABLES.get('settings', 'settings')} (key, value)
-            VALUES ('test_balance', ?)
-        """, (str(balance),))
-        
-        conn.commit()
-        conn.close()
-        return True
-            
-    except Exception as e:
-        logger.error(f"❌ Error setting test balance: {e}")
-        traceback.print_exc()
-        return False

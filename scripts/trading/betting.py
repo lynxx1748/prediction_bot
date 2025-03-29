@@ -473,6 +473,49 @@ def place_bet(web3, contract, wallet_address, private_key, prediction, confidenc
         bool: Whether bet was placed successfully
     """
     try:
+        # CRITICAL SAFETY CHECK: Verify contract address before any transaction
+        from ..core.constants import contract, config
+        
+        # Get the expected contract address from config
+        expected_contract_address = config.get('blockchain', {}).get('contract_address', '').lower()
+        actual_contract_address = contract.address.lower()
+        
+        # Verify the contract address matches what we expect
+        if not expected_contract_address:
+            logger.error("❌ SAFETY ABORT: No contract address specified in config")
+            return False
+            
+        if expected_contract_address != actual_contract_address:
+            logger.error(f"❌ SAFETY ABORT: Contract address mismatch!")
+            logger.error(f"Expected: {expected_contract_address}")
+            logger.error(f"Actual: {actual_contract_address}")
+            return False
+            
+        logger.info(f"✅ Contract address verified: {actual_contract_address}")
+        
+        # Get wallet address and verify it's properly formatted
+        from ..core.constants import account
+        wallet_address = account.address
+        
+        # Extra safety: print exactly what we're about to do
+        logger.info(f"�� Preparing to bet {confidence:.2f} confidence on {prediction} for epoch {round_epoch}")
+        logger.info(f"📝 Bet details:")
+        logger.info(f"   - From wallet: {wallet_address[:6]}...{wallet_address[-4:]}")
+        logger.info(f"   - To contract: {actual_contract_address[:6]}...{actual_contract_address[-4:]}")
+        logger.info(f"   - Prediction: {prediction}")
+        
+        # Ask for final confirmation in live mode
+        if config.get('mode') == 'live' and config.get('safety', {}).get('require_confirmation', True):
+            print("\n⚠️ ABOUT TO PLACE REAL BET ⚠️")
+            print(f"Confidence: {confidence:.2f} | Prediction: {prediction} | Epoch: {round_epoch}")
+            print(f"From: {wallet_address[:6]}...{wallet_address[-4:]}")
+            print(f"To contract: {actual_contract_address[:6]}...{actual_contract_address[-4:]}")
+            confirm = input("Type 'CONFIRM' to proceed or anything else to cancel: ")
+            if confirm != "CONFIRM":
+                logger.info("❌ Bet cancelled by user")
+                return False
+                
+        # Now proceed with the actual bet
         # Get most recent prediction to check for conflicts
         recent_pred = get_most_recent_prediction()
         

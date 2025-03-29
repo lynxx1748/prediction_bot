@@ -15,13 +15,13 @@ A sophisticated prediction and betting system for cryptocurrency binary options 
 
 ---
 
-## ⚠️ IMPORTANT DISCLAIMER
+## ⚠️ IMPORTANT SECURITY WARNING ⚠️
 
-**USE AT YOUR OWN RISK**: This software is provided "as is" without warranty of any kind. The developer is not responsible for any financial losses incurred by using this software. Cryptocurrency trading involves substantial risk and you could lose all of your investment.
+**A critical bug was discovered that could potentially drain your wallet when running the bot in live mode.** This issue is currently being addressed, but please use EXTREME CAUTION if running this code. It is recommended to:
 
-**This bot does not guarantee profits.** While it uses advanced prediction algorithms, no prediction system is 100% accurate. Always use responsible money management and never bet funds you cannot afford to lose.
-
----
+1. Only run in test mode until the fix is fully deployed and tested
+2. Use a dedicated wallet with minimal funds for testing
+3. Monitor all transactions carefully
 
 ## 🌟 Features
 
@@ -97,30 +97,9 @@ The `config.json` file contains all settings for the bot. Key settings include:
 The bot records all predictions and outcomes to a local database. You can analyze performance with:
 
 ```
-SQLITEDB
+SQLite3
 ```
 
-## 📝 Changelog
-
-### Version 0.2.0 (Alpha)
-- ✅ Fixed database issues with missing columns (timestamp, startTime)
-- ✅ Improved error handling for database operations
-- ✅ Enhanced Random Forest model to handle missing data columns
-- ✅ Fixed NULL value handling in price change calculations
-- ✅ Added mode-specific stats tracking (separate live and test mode stats)
-- ✅ Fixed wallet balance display to show correct balance based on mode
-- ✅ Added wallet address checksumming for Web3 compatibility
-- ✅ Improved logging system with automatic directory creation
-- ✅ Removed UI dependencies for better headless operation
-- ✅ Added persistent test wallet balance in database
-- ✅ Enhanced error recovery throughout the application
-
-### Version 0.1.0 (Initial Release)
-- ✅ Core prediction engine
-- ✅ Multiple prediction strategies implementation
-- ✅ Database integration for storing trades and predictions
-- ✅ Test betting system
-- ✅ Machine learning model integration
 
 ## 🔧 Development Status
 
@@ -133,6 +112,7 @@ SQLITEDB
 - ✅ Machine learning models
 - ✅ Error handling
 - ✅ Dynamic bet sizing
+- ✅ Data flow monitoring 
 - 🔄 UI improvements (in progress)
 - 🔄 Advanced risk management (in progress)
 - 🔄 Additional prediction models (in progress)
@@ -154,3 +134,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Remember**: No prediction system is perfect. Always use caution when trading cryptocurrencies and never risk money you cannot afford to lose.
+
+### Fixed Database Storage Issues
+
+- Improved type handling for blockchain data
+- Fixed issues with NULL values in database
+- Enhanced data normalization and validation
+- Better error handling and diagnostic logging
+

@@ -200,7 +200,7 @@ try:
     
     # Only verify wallet setup if we're not in test mode
     if BETTING_MODE.lower() != "test" and (not ACCOUNT_ADDRESS or not PRIVATE_KEY):
-        print("⚠️ Warning: Missing wallet credentials, only test mode will be available")
+        pass
     
     # Test wallet connection if we have an address (that's not the default)
     if ACCOUNT_ADDRESS != "0x0000000000000000000000000000000000000000":
