@@ -123,6 +123,9 @@ class DataFlowMonitor:
     def _check_database(self):
         """Check database connection and tables"""
         try:
+            # Initialize prediction database to ensure tables exist
+            initialize_prediction_db()
+            
             # Try to connect to database
             conn = sqlite3.connect(DB_FILE)
             cursor = conn.cursor()
@@ -136,7 +139,14 @@ class DataFlowMonitor:
                 return False
                 
             conn.close()
-            logger.info("✅ Database connection OK")
+            
+            # Check if we can retrieve recent rounds
+            recent_rounds = get_recent_rounds(5)  # Get 5 most recent rounds
+            if recent_rounds:
+                logger.info(f"✅ Database connection OK. Retrieved {len(recent_rounds)} recent rounds.")
+            else:
+                logger.warning("⚠️ Database connection OK but no recent rounds found.")
+                
             return True
             
         except Exception as e:
@@ -229,7 +239,19 @@ class DataFlowMonitor:
                 
             # Get and store missing round
             try:
+                # Get basic round data first
                 round_data = get_round_data(epoch)
+                
+                # Use get_enriched_round_data for detailed information
+                if round_data and round_data.get('closePrice'):
+                    # Only get enriched data for completed rounds
+                    enriched_data = get_enriched_round_data(epoch)
+                    if enriched_data:
+                        # Merge enriched data into round_data
+                        round_data.update(enriched_data)
+                        logger.info(f"✅ Retrieved enriched data for epoch {epoch}")
+                        
+                # Store the data (now with enrichments if available)
                 if round_data:
                     if record_trade(epoch, round_data):
                         collected += 1
