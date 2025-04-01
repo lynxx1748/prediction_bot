@@ -3,6 +3,7 @@
 Main entry point for the cryptocurrency prediction bot.
 """
 
+# Standard library imports
 import builtins
 import logging
 import os
@@ -13,44 +14,70 @@ import traceback
 import warnings
 from datetime import datetime
 
+# Third-party imports
+import pdb
+
 # Suppress warnings
 warnings.filterwarnings("ignore")
 
-import pdb
-
-# Import from configuration module
+# Local imports - Configuration
 from configuration import config
+
+# Local imports - Core functionality
+from scripts.core.constants import (
+    DB_FILE,
+    STRATEGY_WEIGHTS,
+    TABLES,
+    THRESHOLDS,
+    contract,
+    web3
+)
+
+# Local imports - Models
 from models.func_ai_strategy import AIStrategy
 from models.func_hybrid import hybrid_prediction
-# Import ML models
 from models.func_rf import train_model
 from models.func_ta import TechnicalAnalysis
-# Import analysis functions
-from scripts.analysis.market import (bootstrap_market_data,
-                                     get_historical_prices,
-                                     get_market_direction,
-                                     get_market_sentiment)
+
+# Local imports - Analysis
+from scripts.analysis.market import (
+    bootstrap_market_data,
+    get_historical_prices,
+    get_market_sentiment
+)
 from scripts.analysis.regime import detect_market_regime
 from scripts.analysis.technical import get_technical_prediction
-# Import scripts core functionality
-from scripts.core.constants import (DB_FILE, STRATEGY_WEIGHTS, TABLES,
-                                    THRESHOLDS, contract, web3)
-# Import blockchain data functionality
-from scripts.data.blockchain import (get_current_epoch,
-                                     get_enriched_round_data, get_round_data,
-                                     get_time_until_lock,
-                                     get_time_until_round_end)
-# Import data related functionality
-from scripts.data.database import (get_performance_stats, get_prediction,
-                                   get_recent_trades, get_test_balance,
-                                   initialize_database, record_bet,
-                                   record_trade, update_prediction_outcome)
+
+# Local imports - Blockchain
+from scripts.data.blockchain import (
+    get_current_epoch,
+    get_enriched_round_data,
+    get_round_data,
+    get_time_until_lock,
+    get_time_until_round_end
+)
+
+# Local imports - Database
+from scripts.data.database import (
+    get_performance_stats,
+    get_prediction,
+    get_recent_trades,
+    get_test_balance,
+    initialize_database,
+    record_bet,
+    record_trade,
+    update_prediction_outcome
+)
+
+# Local imports - Diagnosis
 from scripts.diagnosis.check_data_flow import start_monitoring
+
+# Local imports - Prediction
 from scripts.prediction.filtering import filter_signals
-# Import prediction handling
 from scripts.prediction.handler import PredictionHandler
 from scripts.prediction.strategy_selector import select_optimal_strategy
-# Import trading functionality
+
+# Local imports - Trading
 from scripts.trading.betting import check_for_win, place_bet, should_place_bet
 from scripts.trading.money import calculate_optimal_bet_size
 
@@ -591,19 +618,15 @@ def calculate_weighted_confidence(all_predictions):
 
         for strategy, pred_data in all_predictions.items():
             # Skip any invalid predictions
-            if (
-                not pred_data
-                or "prediction" not in pred_data
-                or "confidence" not in pred_data
-            ):
+            if not pred_data or "prediction" not in pred_data or "confidence" not in pred_data:
                 continue
 
-            # Use quality score if available (from filtering), otherwise use standard weight
+            # Use quality score if available (from filtering), otherwise use strategy weight
             if "quality" in pred_data:
                 weights[strategy] = pred_data["quality"]
             else:
-                # Use a normalized confidence as weight (gives more weight to high confidence)
-                weights[strategy] = max(0.5, pred_data["confidence"])
+                # Use strategy weight from STRATEGY_WEIGHTS, fallback to normalized confidence
+                weights[strategy] = STRATEGY_WEIGHTS.get(strategy, max(0.5, pred_data["confidence"]))
 
             total_weight += weights[strategy]
 
@@ -636,9 +659,7 @@ def calculate_weighted_confidence(all_predictions):
             if prediction == "BULL":
                 bull_weight += strategy_weight * adjusted_confidence
             elif prediction == "BEAR":
-                bear_weight += strategy_weight * (
-                    1 - adjusted_confidence
-                )  # Convert to same scale
+                bear_weight += strategy_weight * (1 - adjusted_confidence)  # Convert to same scale
 
         # Calculate final confidence
         final_confidence = 0.5
@@ -679,10 +700,6 @@ def analyze_market_context(round_data):
         dict: Market context
     """
     try:
-        from scripts.analysis.market import (get_market_direction,
-                                             get_market_sentiment)
-        from scripts.analysis.technical import get_technical_prediction
-
         # Initialize result
         market_context = {}
 
@@ -696,8 +713,17 @@ def analyze_market_context(round_data):
         market_context["market_direction"] = direction
         market_context["direction_strength"] = direction_strength
 
-        # Get technical prediction
-        tech_pred, tech_conf = get_technical_prediction(get_historical_prices(20))
+        # Get technical predictions using both methods
+        historical_prices = get_historical_prices(20)
+        
+        # Method 1: Using TechnicalAnalysis class
+        ta = TechnicalAnalysis()
+        ta_pred, ta_conf = ta.analyze(historical_prices)
+        market_context["technical_analysis_prediction"] = ta_pred
+        market_context["technical_analysis_confidence"] = ta_conf
+
+        # Method 2: Using get_technical_prediction
+        tech_pred, tech_conf = get_technical_prediction(historical_prices)
         market_context["technical_prediction"] = tech_pred
         market_context["technical_confidence"] = tech_conf
 
