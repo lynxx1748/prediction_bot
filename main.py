@@ -136,37 +136,37 @@ def setup_logging():
     return logging.getLogger(__name__)
 
 
+def confirm_live_mode():
+    """Get explicit confirmation for live mode."""
+    print("\n⚠️ WARNING: LIVE MODE WILL PLACE REAL BETS WITH REAL MONEY! ⚠️\n")
+    print(
+        "Type 'I CONFIRM' (all caps) to proceed with live mode, or anything else to switch to test mode:"
+    )
+
+    confirmation = input("> ")
+    return confirmation == "I CONFIRM"
+
+
 def select_mode():
-    """Allow user to select mode (live or test)."""
-    while True:
-        print("\n🔄 Select mode:")
-        print("1. Live mode (real betting)")
-        print("2. Test mode (simulated betting)")
+    """Select trading mode with confirmation for live mode."""
+    print("\n🔄 Select trading mode:")
+    print("1. Test mode (simulated bets, no real money)")
+    print("2. Live mode (REAL bets with REAL money)")
+    choice = input("\nSelect mode (1/2): ").strip()
 
-        try:
-            choice = input("Enter your choice (1-2): ").strip()
-
-            if choice == "1":
-                # Confirm live mode to prevent accidental selection
-                confirm = (
-                    input(
-                        "⚠️ WARNING: Live mode will place REAL bets with REAL money. Are you sure? (yes/no): "
-                    )
-                    .strip()
-                    .lower()
-                )
-                if confirm == "yes":
-                    return "live"
-                else:
-                    print("Live mode cancelled. Defaulting to test mode.")
-                    return "test"
-            elif choice == "2":
-                return "test"
-            else:
-                print("Invalid choice. Please enter 1 or 2.")
-        except Exception as e:
-            print(f"Error: {e}")
-            return "test"
+    if choice == "2":
+        # Get confirmation for live mode
+        if confirm_live_mode():
+            mode = "live"
+            print("✅ Live mode confirmed")
+        else:
+            mode = "test"
+            print("⚠️ Live mode not confirmed. Defaulting to test mode.")
+    else:
+        mode = "test"
+        print("✅ Test mode selected")
+    
+    return mode
 
 
 def get_wallet_balance(mode="test"):
@@ -608,7 +608,7 @@ def check_betting_opportunity(confidence, round_data):
 
 def calculate_weighted_confidence(all_predictions):
     """
-    Calculate weighted confidence based on multiple predictions.
+    Calculate weighted confidence based on high confidence predictions only.
 
     Args:
         all_predictions: Dict of predictions from different strategies
@@ -620,15 +620,34 @@ def calculate_weighted_confidence(all_predictions):
         if not all_predictions:
             return 0.51  # Default slightly bullish
 
-        # Get weights for each strategy
-        weights = {}
-        total_weight = 0
+        # Filter for high confidence predictions only
+        high_confidence_predictions = {}
+        min_confidence_threshold = 0.70  # Only use predictions with 70%+ confidence
 
+        print("\n🔍 Analyzing predictions:")
         for strategy, pred_data in all_predictions.items():
-            # Skip any invalid predictions
             if not pred_data or "prediction" not in pred_data or "confidence" not in pred_data:
                 continue
 
+            confidence = pred_data["confidence"]
+            prediction = pred_data["prediction"]
+            
+            print(f"   {strategy}: {prediction} ({confidence:.2f})")
+            
+            if confidence >= min_confidence_threshold:
+                high_confidence_predictions[strategy] = pred_data
+                print(f"   ✅ {strategy} included (high confidence)")
+
+        # If no high confidence predictions, return neutral
+        if not high_confidence_predictions:
+            print("   ⚠️ No high confidence predictions found")
+            return 0.51
+
+        # Get weights for each high confidence strategy
+        weights = {}
+        total_weight = 0
+
+        for strategy, pred_data in high_confidence_predictions.items():
             # Use quality score if available (from filtering), otherwise use strategy weight
             if "quality" in pred_data:
                 weights[strategy] = pred_data["quality"]
@@ -638,10 +657,6 @@ def calculate_weighted_confidence(all_predictions):
 
             total_weight += weights[strategy]
 
-        # No valid predictions with weights
-        if total_weight <= 0:
-            return 0.51
-
         # Normalize weights
         for strategy in weights:
             weights[strategy] /= total_weight
@@ -650,7 +665,7 @@ def calculate_weighted_confidence(all_predictions):
         bull_weight = 0
         bear_weight = 0
 
-        for strategy, pred_data in all_predictions.items():
+        for strategy, pred_data in high_confidence_predictions.items():
             if strategy not in weights:
                 continue
 
@@ -658,16 +673,11 @@ def calculate_weighted_confidence(all_predictions):
             confidence = pred_data["confidence"]
             strategy_weight = weights[strategy]
 
-            # Adjust for predictions near 0.5 (neutral)
-            adjusted_confidence = confidence
-            if 0.48 <= confidence <= 0.52:
-                adjusted_confidence = 0.5  # Treat as neutral
-
             # Aggregate weights by direction
             if prediction == "BULL":
-                bull_weight += strategy_weight * adjusted_confidence
+                bull_weight += strategy_weight * confidence
             elif prediction == "BEAR":
-                bear_weight += strategy_weight * (1 - adjusted_confidence)  # Convert to same scale
+                bear_weight += strategy_weight * confidence
 
         # Calculate final confidence
         final_confidence = 0.5
@@ -676,20 +686,10 @@ def calculate_weighted_confidence(all_predictions):
         else:
             final_confidence = 0.5 - (bear_weight - bull_weight)
 
-        # If we have any single prediction with very high confidence (>0.75)
-        # ensure the weighted result is at least 0.6
-        for pred_data in all_predictions.values():
-            if pred_data.get("confidence", 0) > 0.75:
-                if pred_data["prediction"] == "BULL" and final_confidence < 0.6:
-                    final_confidence = max(final_confidence, 0.6)
-                elif pred_data["prediction"] == "BEAR" and final_confidence > 0.4:
-                    final_confidence = min(final_confidence, 0.4)
-                    # Convert to same scale for output
-                    final_confidence = 1 - final_confidence
-
         # Limit to range [0, 1]
         final_confidence = max(0, min(1, final_confidence))
 
+        print(f"   📊 Final weighted confidence: {final_confidence:.2f}")
         return final_confidence
 
     except Exception as e:
@@ -918,10 +918,15 @@ def retrain_prediction_models():
 
 def main(mode=None):
     """Main function with the bot's main loop."""
-
     # Setup logger
     logger = setup_logging()
     logger.info("🚀 Starting trading bot")
+
+    # Select mode if not provided
+    if mode is None:
+        mode = select_mode()
+
+    print(f"🚀 Running in {mode.upper()} mode")
 
     # Check database setup
     if not check_database_setup():
@@ -944,12 +949,6 @@ def main(mode=None):
     balance = get_wallet_balance(mode)
     print(f"💰 Wallet Balance: {balance:.6f} BNB")
 
-    # Select mode if not provided
-    if mode is None:
-        mode = select_mode()
-
-    print(f"🚀 Running in {mode.upper()} mode")
-
     # Setup event listeners for blockchain
     from scripts.blockchain.events import (setup_event_listeners,
                                            track_betting_events)
@@ -965,7 +964,6 @@ def main(mode=None):
     if not verify_contract_connection():
         print("⚠️ Warning: Contract connection issues, some features may not work")
 
-    # At the beginning of main(), after database initialization but before main loop:
     # Bootstrap market data if needed
     print("🔄 Bootstrapping market data...")
     result = bootstrap_market_data()
@@ -978,9 +976,13 @@ def main(mode=None):
     if not initialize_ai_strategy():
         print("⚠️ AI strategy initialization failed, continuing with other strategies")
 
-    # After bootstrapping market data but before the main loop
     # Try to self-optimize based on existing data
     self_optimize_ai(force=True)
+
+    # Add tracking for last bet round
+    last_bet_round = None
+    last_status_update = 0
+    STATUS_UPDATE_INTERVAL = 30  # Update status every 30 seconds
 
     # Main loop
     try:
@@ -996,24 +998,24 @@ def main(mode=None):
                 seconds_until_lock = get_time_until_lock(current_epoch)
                 seconds_until_end = get_time_until_round_end(current_epoch)
 
-                min_lock, sec_lock = divmod(seconds_until_lock, 60)
-                min_end, sec_end = divmod(seconds_until_end, 60)
+                # If we've already bet on this round, sleep until next round
+                if current_epoch == last_bet_round:
+                    sleep_time = seconds_until_end + 5  # Add 5 seconds buffer
+                    print(f"⏳ Sleeping until next round starts ({sleep_time:.1f} seconds)...")
+                    time.sleep(sleep_time)
+                    continue
 
-                print(f"\n⏱️ Current Epoch: {current_epoch}")
-                print(f"⏱️ Time until lock: {min_lock}m {sec_lock}s")
-                print(f"⏱️ Time until end: {min_end}m {sec_end}s")
+                # Only show status updates periodically
+                current_time = time.time()
+                if current_time - last_status_update >= STATUS_UPDATE_INTERVAL:
+                    min_lock, sec_lock = divmod(seconds_until_lock, 60)
+                    min_end, sec_end = divmod(seconds_until_end, 60)
+                    print(f"\n⏱️ Current Epoch: {current_epoch}")
+                    print(f"⏱️ Time until lock: {min_lock}m {sec_lock}s")
+                    print(f"⏱️ Time until end: {min_end}m {sec_end}s")
+                    last_status_update = current_time
 
-                # Display round information
-                if seconds_until_lock < 300:  # Show info when <5 minutes until lock
-                    round_data = get_enriched_round_data(current_epoch)
-                    if round_data:
-                        display_round_info(current_epoch)
-
-                # At the beginning of the main loop, initialize prediction variables
-                prediction = "UNKNOWN"
-                confidence = 0.0
-
-                # Check for optimal betting time
+                # Only process betting logic if we're in the betting window
                 if is_betting_time(seconds_until_lock):
                     # Get round data
                     round_data = get_enriched_round_data(current_epoch)
@@ -1158,6 +1160,7 @@ def main(mode=None):
                         )
 
                         if result:
+                            last_bet_round = current_epoch
                             print(f"✅ Bet placed: {bet_amount:.6f} BNB on {prediction}")
                             # Add to placed_bets for tracking
                             placed_bets[current_round_id] = {
@@ -1165,8 +1168,13 @@ def main(mode=None):
                                 "amount": bet_amount,
                                 "timestamp": int(time.time()),
                             }
-                        else:
-                            print("❌ Failed to place bet")
+                            
+                            # Sleep until next round starts
+                            sleep_time = seconds_until_end + 5  # Add 5 seconds buffer
+                            print(f"⏳ Sleeping until next round starts ({sleep_time:.1f} seconds)...")
+                            time.sleep(sleep_time)
+                            continue  # Skip the rest of the loop iteration
+
                     elif (
                         mode == "test"
                         and confidence >= min_confidence
@@ -1264,7 +1272,7 @@ def main(mode=None):
                 if seconds_until_lock < 30 or seconds_until_end < 30:
                     print_stats()
 
-                # Sleep time based on how close we are to round transitions
+                # Sleep time based on state
                 if seconds_until_lock < 150 or seconds_until_end < 60:
                     time.sleep(5)  # Check more frequently near transitions
                 else:
@@ -1319,4 +1327,11 @@ def main(mode=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print("\n👋 Exiting by user request...")
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        traceback.print_exc()
+        sys.exit(1)
