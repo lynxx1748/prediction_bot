@@ -34,7 +34,7 @@ A sophisticated prediction and betting system for cryptocurrency binary options 
 
 ## 📝 Changelog
 
-### [0.2.0]
+### [0.2.0] - 2025-04-01
 - Added comprehensive technical analysis integration
 - Improved market context analysis with multiple prediction methods
 - Enhanced test mode balance tracking and updates
@@ -44,7 +44,7 @@ A sophisticated prediction and betting system for cryptocurrency binary options 
 - Improved database handling and NULL value management
 - Enhanced error handling and logging throughout the system
 
-### [0.1.0] - 2024-03-XX
+### [0.1.0] - 2025-03-XX
 - Initial release with core prediction and betting functionality
 - Basic technical analysis implementation
 - Test mode with simulated betting
