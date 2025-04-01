@@ -1,0 +1,1141 @@
+./configuration/__init__.py:8:1: F401 'os' imported but unused
+./data/__init__.py:16:1: E402 module level import not at top of file
+./data/__init__.py:18:1: E402 module level import not at top of file
+./data/collect_data.py:1:1: F401 'json' imported but unused
+./data/collect_data.py:7:1: F401 'pathlib.Path' imported but unused
+./data/collect_data.py:31:80: E501 line too long (87 > 79 characters)
+./data/collect_data.py:86:80: E501 line too long (81 > 79 characters)
+./data/collect_data.py:89:80: E501 line too long (81 > 79 characters)
+./data/collect_data.py:153:80: E501 line too long (187 > 79 characters)
+./data/collect_data.py:183:80: E501 line too long (82 > 79 characters)
+./data/collect_data.py:217:80: E501 line too long (80 > 79 characters)
+./data/create_db.py:108:80: E501 line too long (88 > 79 characters)
+./data/create_db.py:112:80: E501 line too long (87 > 79 characters)
+./main.py:19:1: E402 module level import not at top of file
+./main.py:22:1: E402 module level import not at top of file
+./main.py:23:1: E402 module level import not at top of file
+./main.py:24:1: E402 module level import not at top of file
+./main.py:26:1: E402 module level import not at top of file
+./main.py:27:1: F401 'models.func_ta.TechnicalAnalysis' imported but unused
+./main.py:27:1: E402 module level import not at top of file
+./main.py:29:1: F401 'scripts.analysis.market.get_market_direction' imported but unused
+./main.py:29:1: F401 'scripts.analysis.market.get_market_sentiment' imported but unused
+./main.py:29:1: E402 module level import not at top of file
+./main.py:33:1: E402 module level import not at top of file
+./main.py:34:1: F401 'scripts.analysis.technical.get_technical_prediction' imported but unused
+./main.py:34:1: E402 module level import not at top of file
+./main.py:36:1: F401 'scripts.core.constants.STRATEGY_WEIGHTS' imported but unused
+./main.py:36:1: E402 module level import not at top of file
+./main.py:39:1: E402 module level import not at top of file
+./main.py:44:1: E402 module level import not at top of file
+./main.py:48:1: E402 module level import not at top of file
+./main.py:49:1: E402 module level import not at top of file
+./main.py:51:1: E402 module level import not at top of file
+./main.py:52:1: E402 module level import not at top of file
+./main.py:54:1: E402 module level import not at top of file
+./main.py:55:1: E402 module level import not at top of file
+./main.py:124:80: E501 line too long (110 > 79 characters)
+./main.py:148:80: E501 line too long (81 > 79 characters)
+./main.py:169:80: E501 line too long (83 > 79 characters)
+./main.py:171:80: E501 line too long (83 > 79 characters)
+./main.py:172:23: F541 f-string is missing placeholders
+./main.py:184:23: F541 f-string is missing placeholders
+./main.py:302:80: E501 line too long (84 > 79 characters)
+./main.py:367:80: E501 line too long (86 > 79 characters)
+./main.py:369:80: E501 line too long (126 > 79 characters)
+./main.py:443:80: E501 line too long (112 > 79 characters)
+./main.py:445:80: E501 line too long (81 > 79 characters)
+./main.py:453:11: F541 f-string is missing placeholders
+./main.py:460:80: E501 line too long (96 > 79 characters)
+./main.py:494:80: E501 line too long (114 > 79 characters)
+./main.py:510:80: E501 line too long (92 > 79 characters)
+./main.py:513:80: E501 line too long (83 > 79 characters)
+./main.py:531:80: E501 line too long (87 > 79 characters)
+./main.py:601:80: E501 line too long (92 > 79 characters)
+./main.py:602:13: SIM401 Use 'weights[strategy] = pred_data.get("quality", max(0.5, pred_data['confidence']))' instead of an if-block
+./main.py:605:80: E501 line too long (94 > 79 characters)
+./main.py:618:80: E501 line too long (81 > 79 characters)
+./main.py:654:80: E501 line too long (80 > 79 characters)
+./main.py:656:80: E501 line too long (82 > 79 characters)
+./main.py:682:9: F811 redefinition of unused 'get_market_direction' from line 29
+./main.py:682:9: F811 redefinition of unused 'get_market_sentiment' from line 29
+./main.py:684:9: F811 redefinition of unused 'get_technical_prediction' from line 34
+./main.py:700:80: E501 line too long (82 > 79 characters)
+./main.py:757:80: E501 line too long (82 > 79 characters)
+./main.py:760:80: E501 line too long (101 > 79 characters)
+./main.py:784:80: E501 line too long (87 > 79 characters)
+./main.py:792:19: F541 f-string is missing placeholders
+./main.py:817:80: E501 line too long (84 > 79 characters)
+./main.py:834:23: F541 f-string is missing placeholders
+./main.py:840:80: E501 line too long (98 > 79 characters)
+./main.py:844:80: E501 line too long (88 > 79 characters)
+./main.py:885:1: F811 redefinition of unused 'main' from line 85
+./main.py:920:5: F401 'scripts.blockchain.events.track_betting_events' imported but unused
+./main.py:928:9: F841 local variable 'bull_filter' is assigned to but never used
+./main.py:928:22: F841 local variable 'bear_filter' is assigned to but never used
+./main.py:932:80: E501 line too long (83 > 79 characters)
+./main.py:934:80: E501 line too long (85 > 79 characters)
+./main.py:945:80: E501 line too long (87 > 79 characters)
+./main.py:973:80: E501 line too long (84 > 79 characters)
+./main.py:978:80: E501 line too long (84 > 79 characters)
+./main.py:995:80: E501 line too long (83 > 79 characters)
+./main.py:998:80: E501 line too long (87 > 79 characters)
+./main.py:1003:80: E501 line too long (87 > 79 characters)
+./main.py:1006:80: E501 line too long (81 > 79 characters)
+./main.py:1008:80: E501 line too long (92 > 79 characters)
+./main.py:1017:80: E501 line too long (96 > 79 characters)
+./main.py:1026:80: E501 line too long (80 > 79 characters)
+./main.py:1027:80: E501 line too long (83 > 79 characters)
+./main.py:1040:80: E501 line too long (87 > 79 characters)
+./main.py:1044:80: E501 line too long (87 > 79 characters)
+./main.py:1050:80: E501 line too long (87 > 79 characters)
+./main.py:1056:80: E501 line too long (92 > 79 characters)
+./main.py:1058:80: E501 line too long (87 > 79 characters)
+./main.py:1063:80: E501 line too long (115 > 79 characters)
+./main.py:1087:80: E501 line too long (83 > 79 characters)
+./main.py:1088:80: E501 line too long (88 > 79 characters)
+./main.py:1091:80: E501 line too long (85 > 79 characters)
+./main.py:1096:80: E501 line too long (97 > 79 characters)
+./main.py:1100:31: F541 f-string is missing placeholders
+./main.py:1115:80: E501 line too long (102 > 79 characters)
+./main.py:1127:80: E501 line too long (88 > 79 characters)
+./main.py:1139:80: E501 line too long (88 > 79 characters)
+./main.py:1142:80: E501 line too long (85 > 79 characters)
+./main.py:1147:80: E501 line too long (102 > 79 characters)
+./main.py:1151:31: F541 f-string is missing placeholders
+./main.py:1152:80: E501 line too long (84 > 79 characters)
+./main.py:1155:80: E501 line too long (97 > 79 characters)
+./main.py:1161:80: E501 line too long (105 > 79 characters)
+./main.py:1163:80: E501 line too long (85 > 79 characters)
+./main.py:1164:31: F541 f-string is missing placeholders
+./main.py:1173:35: F541 f-string is missing placeholders
+./main.py:1182:80: E501 line too long (91 > 79 characters)
+./main.py:1189:80: E501 line too long (81 > 79 characters)
+./main.py:1195:80: E501 line too long (102 > 79 characters)
+./main.py:1201:80: E501 line too long (85 > 79 characters)
+./main.py:1206:80: E501 line too long (91 > 79 characters)
+./main.py:1211:80: E501 line too long (82 > 79 characters)
+./main.py:1214:80: E501 line too long (108 > 79 characters)
+./main.py:1221:80: E501 line too long (83 > 79 characters)
+./main.py:1226:80: E501 line too long (93 > 79 characters)
+./main.py:1241:80: E501 line too long (84 > 79 characters)
+./main.py:1243:80: E501 line too long (96 > 79 characters)
+./main.py:1257:80: E501 line too long (88 > 79 characters)
+./main.py:1261:80: E501 line too long (89 > 79 characters)
+./main.py:1264:80: E501 line too long (94 > 79 characters)
+./main.py:1265:80: E501 line too long (84 > 79 characters)
+./models/__init__.py:12:1: E402 module level import not at top of file
+./models/__init__.py:13:1: E402 module level import not at top of file
+./models/__init__.py:15:1: E402 module level import not at top of file
+./models/__init__.py:16:1: E402 module level import not at top of file
+./models/__init__.py:17:1: E402 module level import not at top of file
+./models/__init__.py:18:1: E402 module level import not at top of file
+./models/__init__.py:19:1: E402 module level import not at top of file
+./models/func_ai_strategy.py:26:80: E501 line too long (85 > 79 characters)
+./models/func_ai_strategy.py:41:80: E501 line too long (82 > 79 characters)
+./models/func_ai_strategy.py:54:80: E501 line too long (82 > 79 characters)
+./models/func_ai_strategy.py:67:80: E501 line too long (83 > 79 characters)
+./models/func_ai_strategy.py:74:80: E501 line too long (87 > 79 characters)
+./models/func_ai_strategy.py:81:80: E501 line too long (83 > 79 characters)
+./models/func_ai_strategy.py:85:80: E501 line too long (84 > 79 characters)
+./models/func_ai_strategy.py:94:80: E501 line too long (80 > 79 characters)
+./models/func_ai_strategy.py:113:80: E501 line too long (80 > 79 characters)
+./models/func_ai_strategy.py:126:80: E501 line too long (104 > 79 characters)
+./models/func_ai_strategy.py:131:80: E501 line too long (94 > 79 characters)
+./models/func_ai_strategy.py:157:80: E501 line too long (81 > 79 characters)
+./models/func_ai_strategy.py:160:80: E501 line too long (95 > 79 characters)
+./models/func_ai_strategy.py:195:80: E501 line too long (83 > 79 characters)
+./models/func_ai_strategy.py:224:80: E501 line too long (81 > 79 characters)
+./models/func_ai_strategy.py:227:21: F541 f-string is missing placeholders
+./models/func_ai_strategy.py:254:80: E501 line too long (80 > 79 characters)
+./models/func_ai_strategy.py:284:80: E501 line too long (80 > 79 characters)
+./models/func_ai_strategy.py:314:80: E501 line too long (84 > 79 characters)
+./models/func_ai_strategy.py:324:80: E501 line too long (89 > 79 characters)
+./models/func_ai_strategy.py:327:80: E501 line too long (83 > 79 characters)
+./models/func_ai_strategy.py:336:80: E501 line too long (84 > 79 characters)
+./models/func_ai_strategy.py:345:80: E501 line too long (84 > 79 characters)
+./models/func_ai_strategy.py:355:80: E501 line too long (81 > 79 characters)
+./models/func_ai_strategy.py:361:80: E501 line too long (119 > 79 characters)
+./models/func_ai_strategy.py:376:80: E501 line too long (96 > 79 characters)
+./models/func_ai_strategy.py:500:80: E501 line too long (88 > 79 characters)
+./models/func_ai_strategy.py:562:80: E501 line too long (80 > 79 characters)
+./models/func_ai_strategy.py:566:80: E501 line too long (80 > 79 characters)
+./models/func_ai_strategy.py:581:80: E501 line too long (87 > 79 characters)
+./models/func_ai_strategy.py:582:80: E501 line too long (91 > 79 characters)
+./models/func_ai_strategy.py:584:80: E501 line too long (83 > 79 characters)
+./models/func_ai_strategy.py:589:80: E501 line too long (127 > 79 characters)
+./models/func_ai_strategy.py:599:80: E501 line too long (87 > 79 characters)
+./models/func_ai_strategy.py:603:80: E501 line too long (87 > 79 characters)
+./models/func_ai_strategy.py:606:80: E501 line too long (85 > 79 characters)
+./models/func_ai_strategy.py:609:80: E501 line too long (83 > 79 characters)
+./models/func_ai_strategy.py:611:80: E501 line too long (91 > 79 characters)
+./models/func_ai_strategy.py:654:80: E501 line too long (82 > 79 characters)
+./models/func_ai_strategy.py:658:80: E501 line too long (86 > 79 characters)
+./models/func_ai_strategy.py:685:80: E501 line too long (109 > 79 characters)
+./models/func_ai_strategy.py:690:80: E501 line too long (91 > 79 characters)
+./models/func_ai_strategy.py:693:80: E501 line too long (85 > 79 characters)
+./models/func_ai_strategy.py:700:80: E501 line too long (82 > 79 characters)
+./models/func_ai_strategy.py:724:80: E501 line too long (81 > 79 characters)
+./models/func_ai_strategy.py:731:29: F541 f-string is missing placeholders
+./models/func_ai_strategy.py:731:80: E501 line too long (84 > 79 characters)
+./models/func_ai_strategy.py:742:80: E501 line too long (80 > 79 characters)
+./models/func_ai_strategy.py:745:80: E501 line too long (87 > 79 characters)
+./models/func_ai_strategy.py:749:29: F541 f-string is missing placeholders
+./models/func_hybrid.py:1:1: F401 'json' imported but unused
+./models/func_hybrid.py:16:1: E402 module level import not at top of file
+./models/func_hybrid.py:17:1: E402 module level import not at top of file
+./models/func_hybrid.py:18:1: E402 module level import not at top of file
+./models/func_hybrid.py:19:1: E402 module level import not at top of file
+./models/func_hybrid.py:20:1: E402 module level import not at top of file
+./models/func_hybrid.py:26:80: E501 line too long (85 > 79 characters)
+./models/func_hybrid.py:127:80: E501 line too long (85 > 79 characters)
+./models/func_hybrid.py:144:80: E501 line too long (83 > 79 characters)
+./models/func_hybrid.py:160:9: F841 local variable 'features' is assigned to but never used
+./models/func_hybrid.py:173:80: E501 line too long (113 > 79 characters)
+./models/func_hybrid.py:174:80: E501 line too long (130 > 79 characters)
+./models/func_hybrid.py:185:28: F541 f-string is missing placeholders
+./models/func_hybrid.py:185:80: E501 line too long (81 > 79 characters)
+./models/func_hybrid.py:193:21: F541 f-string is missing placeholders
+./models/func_hybrid.py:240:80: E501 line too long (84 > 79 characters)
+./models/func_hybrid.py:264:80: E501 line too long (87 > 79 characters)
+./models/func_hybrid.py:276:80: E501 line too long (87 > 79 characters)
+./models/func_hybrid.py:287:80: E501 line too long (82 > 79 characters)
+./models/func_hybrid.py:297:80: E501 line too long (80 > 79 characters)
+./models/func_hybrid.py:325:13: F841 local variable 'correct' is assigned to but never used
+./models/func_hybrid.py:331:80: E501 line too long (82 > 79 characters)
+./models/func_hybrid.py:341:80: E501 line too long (84 > 79 characters)
+./models/func_rf.py:16:80: E501 line too long (84 > 79 characters)
+./models/func_rf.py:52:80: E501 line too long (82 > 79 characters)
+./models/func_rf.py:58:80: E501 line too long (87 > 79 characters)
+./models/func_rf.py:65:80: E501 line too long (81 > 79 characters)
+./models/func_rf.py:74:80: E501 line too long (86 > 79 characters)
+./models/func_rf.py:81:80: E501 line too long (84 > 79 characters)
+./models/func_rf_enhanced.py:66:80: E501 line too long (83 > 79 characters)
+./models/func_rf_enhanced.py:86:80: E501 line too long (87 > 79 characters)
+./models/func_rf_enhanced.py:87:80: E501 line too long (80 > 79 characters)
+./models/func_rf_enhanced.py:92:29: F541 f-string is missing placeholders
+./models/func_rf_enhanced.py:94:29: F541 f-string is missing placeholders
+./models/func_rf_enhanced.py:94:80: E501 line too long (80 > 79 characters)
+./models/func_rf_enhanced.py:137:80: E501 line too long (87 > 79 characters)
+./models/func_rf_enhanced.py:167:80: E501 line too long (82 > 79 characters)
+./models/func_rf_enhanced.py:170:80: E501 line too long (92 > 79 characters)
+./models/func_rf_enhanced.py:176:80: E501 line too long (81 > 79 characters)
+./models/func_rf_enhanced.py:190:80: E501 line too long (86 > 79 characters)
+./models/func_rf_enhanced.py:238:17: F841 local variable 'version' is assigned to but never used
+./models/func_rf_enhanced.py:241:80: E501 line too long (102 > 79 characters)
+./models/func_rf_enhanced.py:255:80: E501 line too long (110 > 79 characters)
+./models/func_rf_enhanced.py:257:25: F541 f-string is missing placeholders
+./models/func_rf_enhanced.py:282:80: E501 line too long (81 > 79 characters)
+./models/func_rf_enhanced.py:309:80: E501 line too long (84 > 79 characters)
+./models/func_rf_enhanced.py:323:80: E501 line too long (80 > 79 characters)
+./models/func_rf_enhanced.py:330:80: E501 line too long (86 > 79 characters)
+./models/func_rf_enhanced.py:330:84: E203 whitespace before ':'
+./models/func_rf_enhanced.py:363:80: E501 line too long (157 > 79 characters)
+./models/func_rf_enhanced.py:370:80: E501 line too long (81 > 79 characters)
+./models/func_rf_enhanced.py:372:80: E501 line too long (81 > 79 characters)
+./models/func_rf_enhanced.py:374:80: E501 line too long (104 > 79 characters)
+./models/func_rf_enhanced.py:381:80: E501 line too long (85 > 79 characters)
+./models/func_rf_enhanced.py:388:80: E501 line too long (86 > 79 characters)
+./models/func_rf_enhanced.py:389:37: F541 f-string is missing placeholders
+./models/func_rf_enhanced.py:389:80: E501 line too long (82 > 79 characters)
+./models/func_rf_enhanced.py:409:80: E501 line too long (81 > 79 characters)
+./models/func_rf_enhanced.py:421:80: E501 line too long (81 > 79 characters)
+./models/func_ta.py:106:80: E501 line too long (82 > 79 characters)
+./models/func_ta.py:154:9: SIM904 Initialize dictionary 'patterns' directly
+./models/func_ta.py:185:80: E501 line too long (85 > 79 characters)
+./models/func_ta.py:197:80: E501 line too long (93 > 79 characters)
+./models/func_ta.py:201:80: E501 line too long (85 > 79 characters)
+./models/func_ta.py:219:80: E501 line too long (86 > 79 characters)
+./models/func_ta.py:245:29: F541 f-string is missing placeholders
+./models/func_ta.py:247:80: E501 line too long (85 > 79 characters)
+./models/func_ta.py:251:33: F541 f-string is missing placeholders
+./models/func_ta.py:253:33: F541 f-string is missing placeholders
+./models/func_ta.py:255:33: F541 f-string is missing placeholders
+./models/func_ta.py:257:33: F541 f-string is missing placeholders
+./models/func_ta.py:269:80: E501 line too long (86 > 79 characters)
+./models/func_ta.py:311:80: E501 line too long (105 > 79 characters)
+./models/func_ta.py:317:80: E501 line too long (81 > 79 characters)
+./models/func_ta.py:323:80: E501 line too long (112 > 79 characters)
+./models/func_ta.py:325:80: E501 line too long (88 > 79 characters)
+./models/func_ta.py:328:80: E501 line too long (83 > 79 characters)
+./models/func_ta.py:334:80: E501 line too long (97 > 79 characters)
+./models/func_ta.py:339:80: E501 line too long (103 > 79 characters)
+./models/func_ta.py:341:80: E501 line too long (80 > 79 characters)
+./models/func_ta.py:344:80: E501 line too long (97 > 79 characters)
+./models/func_ta.py:349:80: E501 line too long (103 > 79 characters)
+./models/func_ta.py:366:80: E501 line too long (83 > 79 characters)
+./models/func_ta.py:369:80: E501 line too long (80 > 79 characters)
+./models/func_ta.py:385:80: E501 line too long (108 > 79 characters)
+./models/func_ta.py:396:80: E501 line too long (117 > 79 characters)
+./models/func_ta.py:417:9: E722 do not use bare 'except'
+./models/func_ta.py:441:80: E501 line too long (83 > 79 characters)
+./models/func_ta.py:520:9: F841 local variable 'short_period' is assigned to but never used
+./models/func_ta.py:521:9: F841 local variable 'medium_period' is assigned to but never used
+./models/func_ta.py:522:9: F841 local variable 'long_period' is assigned to but never used
+./models/func_ta.py:549:80: E501 line too long (92 > 79 characters)
+./models/func_ta.py:565:80: E501 line too long (83 > 79 characters)
+./models/func_ta.py:580:80: E501 line too long (86 > 79 characters)
+./models/func_ta.py:590:80: E501 line too long (80 > 79 characters)
+./models/func_ta.py:596:80: E501 line too long (102 > 79 characters)
+./models/func_ta.py:622:80: E501 line too long (92 > 79 characters)
+./models/model_evaluation.py:92:80: E501 line too long (94 > 79 characters)
+./models/model_evaluation.py:119:80: E501 line too long (97 > 79 characters)
+./models/model_evaluation.py:157:80: E501 line too long (87 > 79 characters)
+./models/model_evaluation.py:190:80: E501 line too long (104 > 79 characters)
+./models/model_evaluation.py:203:80: E501 line too long (106 > 79 characters)
+./models/model_evaluation.py:213:80: E501 line too long (107 > 79 characters)
+./models/model_evaluation.py:220:80: E501 line too long (88 > 79 characters)
+./models/model_evaluation.py:257:80: E501 line too long (87 > 79 characters)
+./models/model_evaluation.py:265:80: E501 line too long (88 > 79 characters)
+./models/model_evaluation.py:275:80: E501 line too long (85 > 79 characters)
+./models/model_evaluation.py:310:80: E501 line too long (89 > 79 characters)
+./models/model_version_control.py:30:80: E501 line too long (87 > 79 characters)
+./models/model_version_control.py:46:80: E501 line too long (88 > 79 characters)
+./models/model_version_control.py:49:80: E501 line too long (88 > 79 characters)
+./models/model_version_control.py:164:80: E501 line too long (81 > 79 characters)
+./run_bot.py:17:80: E501 line too long (94 > 79 characters)
+./run_bot.py:26:80: E501 line too long (105 > 79 characters)
+./scripts/__init__.py:12:1: E402 module level import not at top of file
+./scripts/analysis/__init__.py:3:67: W291 trailing whitespace
+./scripts/analysis/market.py:33:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/market.py:44:80: E501 line too long (129 > 79 characters)
+./scripts/analysis/market.py:61:80: E501 line too long (100 > 79 characters)
+./scripts/analysis/market.py:68:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:71:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/market.py:77:80: E501 line too long (102 > 79 characters)
+./scripts/analysis/market.py:106:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/market.py:129:80: E501 line too long (98 > 79 characters)
+./scripts/analysis/market.py:134:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/market.py:140:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:158:80: E501 line too long (90 > 79 characters)
+./scripts/analysis/market.py:164:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/market.py:191:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/market.py:300:32: SIM114 Use logical or ((isinstance(data, dict) and part in data) or (isinstance(data, list) and isinstance(part, int) and part < len(data))) and a single body
+./scripts/analysis/market.py:336:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:339:80: E501 line too long (94 > 79 characters)
+./scripts/analysis/market.py:343:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/market.py:346:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/market.py:384:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/market.py:411:80: E501 line too long (90 > 79 characters)
+./scripts/analysis/market.py:416:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:454:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:456:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/market.py:458:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:460:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/market.py:471:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/market.py:472:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/market.py:531:80: E501 line too long (93 > 79 characters)
+./scripts/analysis/market.py:545:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/market.py:546:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/market.py:578:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/market.py:592:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:598:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:622:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/market.py:633:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/market.py:634:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/market.py:694:80: E501 line too long (116 > 79 characters)
+./scripts/analysis/market.py:724:1: F811 redefinition of unused 'get_bnb_price_cached' from line 246
+./scripts/analysis/market.py:740:1: F811 redefinition of unused 'get_prices_from_multiple_sources' from line 327
+./scripts/analysis/market.py:789:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/market.py:813:80: E501 line too long (93 > 79 characters)
+./scripts/analysis/market.py:831:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:836:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/market.py:935:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/market.py:960:80: E501 line too long (94 > 79 characters)
+./scripts/analysis/market.py:993:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/market.py:1000:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/market.py:1024:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/market.py:1059:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/market.py:1073:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/market.py:1101:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/pattern.py:35:9: F841 local variable 'changes' is assigned to but never used
+./scripts/analysis/pattern.py:43:13: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/analysis/pattern.py:45:17: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/analysis/pattern.py:45:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/pattern.py:48:13: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/analysis/pattern.py:50:17: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/analysis/pattern.py:50:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/pattern.py:119:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/pattern.py:134:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/pattern.py:149:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/pattern.py:212:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/pattern.py:227:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/pattern.py:301:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/pattern.py:323:45: E203 whitespace before ':'
+./scripts/analysis/pattern.py:347:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/pattern.py:349:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/pattern.py:423:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/pattern.py:424:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/regime.py:63:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/regime.py:218:80: E501 line too long (89 > 79 characters)
+./scripts/analysis/regime.py:232:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/short_term.py:28:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/short_term.py:57:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/short_term.py:94:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/short_term.py:101:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/short_term.py:108:80: E501 line too long (96 > 79 characters)
+./scripts/analysis/short_term.py:115:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/short_term.py:122:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/short_term.py:128:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/short_term.py:133:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/short_term.py:172:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/short_term.py:176:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/short_term.py:250:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/short_term.py:251:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/short_term.py:252:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/short_term.py:257:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/short_term.py:263:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/short_term.py:318:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/short_term.py:322:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/short_term.py:335:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/short_term.py:346:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/short_term.py:348:80: E501 line too long (95 > 79 characters)
+./scripts/analysis/short_term.py:353:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/short_term.py:355:80: E501 line too long (95 > 79 characters)
+./scripts/analysis/swing.py:3:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/swing.py:26:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/swing.py:51:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/swing.py:61:80: E501 line too long (93 > 79 characters)
+./scripts/analysis/swing.py:64:80: E501 line too long (98 > 79 characters)
+./scripts/analysis/swing.py:76:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/swing.py:79:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/swing.py:83:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/swing.py:102:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/swing.py:114:80: E501 line too long (89 > 79 characters)
+./scripts/analysis/swing.py:118:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/swing.py:123:80: E501 line too long (89 > 79 characters)
+./scripts/analysis/swing.py:127:80: E501 line too long (89 > 79 characters)
+./scripts/analysis/swing.py:137:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/swing.py:143:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/swing.py:153:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/swing.py:157:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/swing.py:171:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/swing.py:176:80: E501 line too long (93 > 79 characters)
+./scripts/analysis/swing.py:182:80: E501 line too long (95 > 79 characters)
+./scripts/analysis/swing.py:205:80: E501 line too long (93 > 79 characters)
+./scripts/analysis/swing.py:223:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/swing.py:227:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/swing.py:235:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/swing.py:243:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/swing.py:248:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/swing.py:294:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/swing.py:303:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/swing.py:317:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/swing.py:330:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/swing.py:368:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/swing.py:372:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/technical.py:31:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/technical.py:91:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/technical.py:102:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/technical.py:104:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/technical.py:119:80: E501 line too long (96 > 79 characters)
+./scripts/analysis/technical.py:132:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/technical.py:138:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/technical.py:155:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/technical.py:163:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/technical.py:188:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/technical.py:264:80: E501 line too long (94 > 79 characters)
+./scripts/analysis/technical.py:269:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/technical.py:276:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/technical.py:311:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/technical.py:340:9: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/analysis/technical.py:342:80: E501 line too long (89 > 79 characters)
+./scripts/analysis/technical.py:367:9: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/analysis/technical.py:435:80: E501 line too long (114 > 79 characters)
+./scripts/analysis/technical.py:447:80: E501 line too long (111 > 79 characters)
+./scripts/analysis/technical.py:494:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/technical.py:507:80: E501 line too long (113 > 79 characters)
+./scripts/analysis/technical.py:515:80: E501 line too long (103 > 79 characters)
+./scripts/analysis/technical.py:523:80: E501 line too long (101 > 79 characters)
+./scripts/analysis/technical.py:529:80: E501 line too long (93 > 79 characters)
+./scripts/analysis/technical.py:783:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/technical.py:799:21: F541 f-string is missing placeholders
+./scripts/analysis/technical.py:802:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/technical.py:811:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/technical.py:812:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/technical.py:863:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/technical.py:875:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/technical.py:893:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/technical.py:899:80: E501 line too long (122 > 79 characters)
+./scripts/analysis/technical.py:909:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/technical.py:912:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/technical.py:933:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/volume.py:29:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/volume.py:40:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/volume.py:46:80: E501 line too long (80 > 79 characters)
+./scripts/analysis/volume.py:61:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/volume.py:64:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/volume.py:80:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/volume.py:91:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/volume.py:96:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/volume.py:104:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/volume.py:125:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/volume.py:184:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/volume.py:214:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/volume.py:216:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/volume.py:228:80: E501 line too long (98 > 79 characters)
+./scripts/analysis/volume.py:234:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/volume.py:285:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/volume.py:290:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/volume.py:297:80: E501 line too long (89 > 79 characters)
+./scripts/analysis/volume.py:317:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/volume.py:320:80: E501 line too long (88 > 79 characters)
+./scripts/analysis/volume.py:337:80: E501 line too long (85 > 79 characters)
+./scripts/analysis/volume.py:361:80: E501 line too long (82 > 79 characters)
+./scripts/analysis/volume.py:363:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/volume.py:381:80: E501 line too long (86 > 79 characters)
+./scripts/analysis/volume.py:401:80: E501 line too long (83 > 79 characters)
+./scripts/analysis/volume.py:433:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/volume.py:439:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/volume.py:445:80: E501 line too long (84 > 79 characters)
+./scripts/analysis/volume.py:451:80: E501 line too long (87 > 79 characters)
+./scripts/analysis/volume.py:542:80: E501 line too long (81 > 79 characters)
+./scripts/analysis/volume.py:545:80: E501 line too long (81 > 79 characters)
+./scripts/blockchain/events.py:69:80: E501 line too long (81 > 79 characters)
+./scripts/blockchain/events.py:79:80: E501 line too long (81 > 79 characters)
+./scripts/blockchain/events.py:115:80: E501 line too long (90 > 79 characters)
+./scripts/blockchain/events.py:148:80: E501 line too long (87 > 79 characters)
+./scripts/blockchain/events.py:179:80: E501 line too long (84 > 79 characters)
+./scripts/blockchain/events.py:188:80: E501 line too long (84 > 79 characters)
+./scripts/blockchain/events.py:229:80: E501 line too long (96 > 79 characters)
+./scripts/blockchain/events.py:237:80: E501 line too long (87 > 79 characters)
+./scripts/blockchain/events.py:291:80: E501 line too long (80 > 79 characters)
+./scripts/blockchain/events.py:297:80: E501 line too long (82 > 79 characters)
+./scripts/blockchain/events.py:305:80: E501 line too long (92 > 79 characters)
+./scripts/core/__init__.py:20:1: E402 module level import not at top of file
+./scripts/core/__init__.py:21:1: E402 module level import not at top of file
+./scripts/core/config.py:62:80: E501 line too long (86 > 79 characters)
+./scripts/core/config.py:118:80: E501 line too long (80 > 79 characters)
+./scripts/core/constants.py:14:80: E501 line too long (87 > 79 characters)
+./scripts/core/constants.py:52:80: E501 line too long (88 > 79 characters)
+./scripts/core/constants.py:144:80: E501 line too long (80 > 79 characters)
+./scripts/core/constants.py:150:80: E501 line too long (86 > 79 characters)
+./scripts/core/constants.py:154:80: E501 line too long (110 > 79 characters)
+./scripts/core/constants.py:212:80: E501 line too long (82 > 79 characters)
+./scripts/core/constants.py:217:80: E501 line too long (83 > 79 characters)
+./scripts/core/constants.py:224:80: E501 line too long (86 > 79 characters)
+./scripts/core/constants.py:249:80: E501 line too long (82 > 79 characters)
+./scripts/core/constants.py:251:80: E501 line too long (80 > 79 characters)
+./scripts/core/logging.py:51:80: E501 line too long (82 > 79 characters)
+./scripts/core/logging.py:80:80: E501 line too long (91 > 79 characters)
+./scripts/core/utils.py:51:80: E501 line too long (81 > 79 characters)
+./scripts/core/utils.py:61:80: E501 line too long (100 > 79 characters)
+./scripts/core/utils.py:67:80: E501 line too long (102 > 79 characters)
+./scripts/core/utils.py:95:80: E501 line too long (94 > 79 characters)
+./scripts/core/utils.py:107:80: E501 line too long (114 > 79 characters)
+./scripts/core/utils.py:131:80: E501 line too long (85 > 79 characters)
+./scripts/core/utils.py:160:9: F841 local variable 'lockTimestamp' is assigned to but never used
+./scripts/core/utils.py:185:80: E501 line too long (82 > 79 characters)
+./scripts/core/utils.py:196:80: E501 line too long (87 > 79 characters)
+./scripts/core/utils.py:206:80: E501 line too long (82 > 79 characters)
+./scripts/data/__init__.py:16:1: E402 module level import not at top of file
+./scripts/data/__init__.py:21:1: E402 module level import not at top of file
+./scripts/data/__init__.py:23:1: E402 module level import not at top of file
+./scripts/data/blockchain.py:56:9: E722 do not use bare 'except'
+./scripts/data/blockchain.py:65:80: E501 line too long (87 > 79 characters)
+./scripts/data/blockchain.py:72:80: E501 line too long (83 > 79 characters)
+./scripts/data/blockchain.py:82:80: E501 line too long (80 > 79 characters)
+./scripts/data/blockchain.py:127:80: E501 line too long (87 > 79 characters)
+./scripts/data/blockchain.py:152:80: E501 line too long (85 > 79 characters)
+./scripts/data/blockchain.py:177:80: E501 line too long (80 > 79 characters)
+./scripts/data/blockchain.py:220:80: E501 line too long (80 > 79 characters)
+./scripts/data/blockchain.py:250:80: E501 line too long (82 > 79 characters)
+./scripts/data/blockchain.py:256:80: E501 line too long (103 > 79 characters)
+./scripts/data/blockchain.py:393:80: E501 line too long (89 > 79 characters)
+./scripts/data/blockchain.py:447:9: E722 do not use bare 'except'
+./scripts/data/blockchain.py:465:9: F841 local variable 'active_startTimestamp' is assigned to but never used
+./scripts/data/blockchain.py:466:9: F841 local variable 'active_lockTimestamp' is assigned to but never used
+./scripts/data/blockchain.py:502:80: E501 line too long (113 > 79 characters)
+./scripts/data/blockchain.py:506:80: E501 line too long (110 > 79 characters)
+./scripts/data/blockchain.py:510:80: E501 line too long (113 > 79 characters)
+./scripts/data/blockchain.py:594:80: E501 line too long (87 > 79 characters)
+./scripts/data/collect_data.py:6:1: F401 'json' imported but unused
+./scripts/data/collect_data.py:56:80: E501 line too long (80 > 79 characters)
+./scripts/data/collect_data.py:71:21: SIM904 Initialize dictionary 'formatted_round' directly
+./scripts/data/collect_data.py:103:80: E501 line too long (84 > 79 characters)
+./scripts/data/collect_data.py:105:80: E501 line too long (86 > 79 characters)
+./scripts/data/collect_data.py:116:80: E501 line too long (86 > 79 characters)
+./scripts/data/collect_data.py:127:80: E501 line too long (94 > 79 characters)
+./scripts/data/collect_data.py:152:66: W291 trailing whitespace
+./scripts/data/collect_data.py:181:55: W291 trailing whitespace
+./scripts/data/collect_data.py:182:80: E501 line too long (89 > 79 characters)
+./scripts/data/collect_data.py:182:90: W291 trailing whitespace
+./scripts/data/collect_data.py:237:80: E501 line too long (80 > 79 characters)
+./scripts/data/collect_data.py:240:80: E501 line too long (80 > 79 characters)
+./scripts/data/collect_data.py:255:25: SIM904 Initialize dictionary 'formatted_round' directly
+./scripts/data/collect_data.py:311:80: E501 line too long (94 > 79 characters)
+./scripts/data/collect_data.py:332:80: E501 line too long (82 > 79 characters)
+./scripts/data/collect_data.py:347:80: E501 line too long (85 > 79 characters)
+./scripts/data/collect_data.py:384:80: E501 line too long (82 > 79 characters)
+./scripts/data/collect_data.py:392:80: E501 line too long (86 > 79 characters)
+./scripts/data/collector.py:63:80: E501 line too long (83 > 79 characters)
+./scripts/data/collector.py:75:80: E501 line too long (85 > 79 characters)
+./scripts/data/collector.py:110:80: E501 line too long (83 > 79 characters)
+./scripts/data/collector.py:120:80: E501 line too long (85 > 79 characters)
+./scripts/data/collector.py:123:80: E501 line too long (82 > 79 characters)
+./scripts/data/collector.py:127:80: E501 line too long (87 > 79 characters)
+./scripts/data/collector.py:131:80: E501 line too long (80 > 79 characters)
+./scripts/data/collector.py:133:80: E501 line too long (85 > 79 characters)
+./scripts/data/collector.py:174:80: E501 line too long (82 > 79 characters)
+./scripts/data/collector.py:175:80: E501 line too long (81 > 79 characters)
+./scripts/data/collector.py:176:80: E501 line too long (81 > 79 characters)
+./scripts/data/collector.py:205:80: E501 line too long (82 > 79 characters)
+./scripts/data/collector.py:208:80: E501 line too long (82 > 79 characters)
+./scripts/data/collector.py:223:80: E501 line too long (83 > 79 characters)
+./scripts/data/collector.py:237:25: F541 f-string is missing placeholders
+./scripts/data/collector.py:239:80: E501 line too long (91 > 79 characters)
+./scripts/data/collector.py:266:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:42:25: F541 f-string is missing placeholders
+./scripts/data/database.py:50:1: W293 blank line contains whitespace
+./scripts/data/database.py:58:1: W293 blank line contains whitespace
+./scripts/data/database.py:62:1: W293 blank line contains whitespace
+./scripts/data/database.py:71:1: W293 blank line contains whitespace
+./scripts/data/database.py:77:1: W293 blank line contains whitespace
+./scripts/data/database.py:84:1: W293 blank line contains whitespace
+./scripts/data/database.py:87:49: W291 trailing whitespace
+./scripts/data/database.py:97:1: W293 blank line contains whitespace
+./scripts/data/database.py:122:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:125:80: E501 line too long (99 > 79 characters)
+./scripts/data/database.py:138:25: F541 f-string is missing placeholders
+./scripts/data/database.py:166:25: F541 f-string is missing placeholders
+./scripts/data/database.py:250:80: E501 line too long (85 > 79 characters)
+./scripts/data/database.py:252:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:254:80: E501 line too long (80 > 79 characters)
+./scripts/data/database.py:261:80: E501 line too long (88 > 79 characters)
+./scripts/data/database.py:278:80: E501 line too long (96 > 79 characters)
+./scripts/data/database.py:292:80: E501 line too long (114 > 79 characters)
+./scripts/data/database.py:325:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:343:43: W291 trailing whitespace
+./scripts/data/database.py:344:44: W291 trailing whitespace
+./scripts/data/database.py:429:43: W291 trailing whitespace
+./scripts/data/database.py:430:41: W291 trailing whitespace
+./scripts/data/database.py:451:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:532:80: E501 line too long (81 > 79 characters)
+./scripts/data/database.py:733:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:745:59: W291 trailing whitespace
+./scripts/data/database.py:793:80: E501 line too long (85 > 79 characters)
+./scripts/data/database.py:801:80: E501 line too long (87 > 79 characters)
+./scripts/data/database.py:841:32: F541 f-string is missing placeholders
+./scripts/data/database.py:869:80: E501 line too long (85 > 79 characters)
+./scripts/data/database.py:870:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:871:80: E501 line too long (85 > 79 characters)
+./scripts/data/database.py:971:80: E501 line too long (104 > 79 characters)
+./scripts/data/database.py:976:80: E501 line too long (86 > 79 characters)
+./scripts/data/database.py:978:80: E501 line too long (80 > 79 characters)
+./scripts/data/database.py:1024:80: E501 line too long (101 > 79 characters)
+./scripts/data/database.py:1027:80: E501 line too long (101 > 79 characters)
+./scripts/data/database.py:1029:80: E501 line too long (86 > 79 characters)
+./scripts/data/database.py:1062:1: W293 blank line contains whitespace
+./scripts/data/database.py:1070:1: W293 blank line contains whitespace
+./scripts/data/database.py:1073:1: W293 blank line contains whitespace
+./scripts/data/database.py:1082:1: W293 blank line contains whitespace
+./scripts/data/database.py:1181:28: W291 trailing whitespace
+./scripts/data/database.py:1182:41: W291 trailing whitespace
+./scripts/data/database.py:1183:47: W291 trailing whitespace
+./scripts/data/database.py:1247:80: E501 line too long (80 > 79 characters)
+./scripts/data/database.py:1250:80: E501 line too long (105 > 79 characters)
+./scripts/data/database.py:1264:80: E501 line too long (83 > 79 characters)
+./scripts/data/database.py:1274:17: E722 do not use bare 'except'
+./scripts/data/database.py:1323:19: W291 trailing whitespace
+./scripts/data/database.py:1326:80: E501 line too long (94 > 79 characters)
+./scripts/data/database.py:1327:80: E501 line too long (94 > 79 characters)
+./scripts/data/database.py:1364:80: E501 line too long (88 > 79 characters)
+./scripts/data/database.py:1455:47: W291 trailing whitespace
+./scripts/data/database.py:1497:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:1500:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:1503:80: E501 line too long (80 > 79 characters)
+./scripts/data/database.py:1532:80: E501 line too long (89 > 79 characters)
+./scripts/data/database.py:1576:19: W291 trailing whitespace
+./scripts/data/database.py:1600:19: W291 trailing whitespace
+./scripts/data/database.py:1637:80: E501 line too long (88 > 79 characters)
+./scripts/data/database.py:1715:80: E501 line too long (85 > 79 characters)
+./scripts/data/database.py:1736:19: W291 trailing whitespace
+./scripts/data/database.py:1850:80: E501 line too long (82 > 79 characters)
+./scripts/data/database.py:1851:9: SIM904 Initialize dictionary 'trade_data_with_epoch' directly
+./scripts/data/database.py:1860:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:1863:80: E501 line too long (88 > 79 characters)
+./scripts/data/database.py:1908:80: E501 line too long (98 > 79 characters)
+./scripts/data/database.py:1909:80: E501 line too long (87 > 79 characters)
+./scripts/data/database.py:1914:54: W291 trailing whitespace
+./scripts/data/database.py:1984:40: W291 trailing whitespace
+./scripts/data/database.py:1985:80: E501 line too long (101 > 79 characters)
+./scripts/data/database.py:1985:102: W291 trailing whitespace
+./scripts/data/database.py:1991:80: E501 line too long (87 > 79 characters)
+./scripts/data/database.py:2049:27: W291 trailing whitespace
+./scripts/data/database.py:2054:49: W291 trailing whitespace
+./scripts/data/database.py:2055:55: W291 trailing whitespace
+./scripts/data/database.py:2063:27: W291 trailing whitespace
+./scripts/data/database.py:2068:49: W291 trailing whitespace
+./scripts/data/database.py:2069:55: W291 trailing whitespace
+./scripts/data/database.py:2086:80: E501 line too long (88 > 79 characters)
+./scripts/data/database.py:2156:19: W291 trailing whitespace
+./scripts/data/database.py:2246:27: W291 trailing whitespace
+./scripts/data/database.py:2252:43: W291 trailing whitespace
+./scripts/data/database.py:2354:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:2369:32: F541 f-string is missing placeholders
+./scripts/data/database.py:2369:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:2387:80: E501 line too long (81 > 79 characters)
+./scripts/data/database.py:2492:23: W291 trailing whitespace
+./scripts/data/database.py:2497:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:2519:80: E501 line too long (83 > 79 characters)
+./scripts/data/database.py:2585:50: W291 trailing whitespace
+./scripts/data/database.py:2586:32: W291 trailing whitespace
+./scripts/data/database.py:2624:29: W291 trailing whitespace
+./scripts/data/database.py:2625:41: W291 trailing whitespace
+./scripts/data/database.py:2626:36: W291 trailing whitespace
+./scripts/data/database.py:2637:34: W291 trailing whitespace
+./scripts/data/database.py:2638:40: W291 trailing whitespace
+./scripts/data/database.py:2640:36: W291 trailing whitespace
+./scripts/data/database.py:2719:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:2722:80: E501 line too long (84 > 79 characters)
+./scripts/data/database.py:2806:80: E501 line too long (84 > 79 characters)
+./scripts/data/features.py:47:80: E501 line too long (82 > 79 characters)
+./scripts/data/features.py:61:80: E501 line too long (85 > 79 characters)
+./scripts/data/processing.py:54:80: E501 line too long (85 > 79 characters)
+./scripts/data/processing.py:114:80: E501 line too long (84 > 79 characters)
+./scripts/data/processing.py:117:80: E501 line too long (84 > 79 characters)
+./scripts/data/processing.py:211:47: W291 trailing whitespace
+./scripts/data/processing.py:280:80: E501 line too long (84 > 79 characters)
+./scripts/data/processing.py:349:19: W291 trailing whitespace
+./scripts/data/processing.py:357:47: W291 trailing whitespace
+./scripts/data/processing.py:467:47: W291 trailing whitespace
+./scripts/data/processing.py:513:80: E501 line too long (85 > 79 characters)
+./scripts/data/processing.py:541:80: E501 line too long (91 > 79 characters)
+./scripts/data/processing.py:554:19: W291 trailing whitespace
+./scripts/data/processing.py:556:80: E501 line too long (93 > 79 characters)
+./scripts/data/processing.py:589:80: E501 line too long (86 > 79 characters)
+./scripts/data/processing.py:638:80: E501 line too long (102 > 79 characters)
+./scripts/data/processing.py:644:80: E501 line too long (99 > 79 characters)
+./scripts/data/processing.py:648:80: E501 line too long (99 > 79 characters)
+./scripts/data/processing.py:686:80: E501 line too long (125 > 79 characters)
+./scripts/data/processing.py:704:80: E501 line too long (85 > 79 characters)
+./scripts/data/processing.py:709:80: E501 line too long (85 > 79 characters)
+./scripts/data/processing.py:828:19: W291 trailing whitespace
+./scripts/data/processing.py:829:23: W291 trailing whitespace
+./scripts/data/processing.py:831:53: W291 trailing whitespace
+./scripts/data/processing.py:832:55: W291 trailing whitespace
+./scripts/data/processing.py:833:50: W291 trailing whitespace
+./scripts/data/processing.py:834:56: W291 trailing whitespace
+./scripts/data/processing.py:835:47: W291 trailing whitespace
+./scripts/data/processing.py:836:57: W291 trailing whitespace
+./scripts/data/processing.py:887:80: E501 line too long (89 > 79 characters)
+./scripts/data/processing.py:895:80: E501 line too long (80 > 79 characters)
+./scripts/data/processing.py:1006:80: E501 line too long (82 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:7:1: F401 'os' imported but unused
+./scripts/diagnosis/check_data_flow.py:19:1: E402 module level import not at top of file
+./scripts/diagnosis/check_data_flow.py:20:1: E402 module level import not at top of file
+./scripts/diagnosis/check_data_flow.py:22:1: E402 module level import not at top of file
+./scripts/diagnosis/check_data_flow.py:58:80: E501 line too long (86 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:99:80: E501 line too long (115 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:104:80: E501 line too long (111 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:123:80: E501 line too long (87 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:144:80: E501 line too long (98 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:158:80: E501 line too long (94 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:161:80: E501 line too long (87 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:180:80: E501 line too long (87 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:188:80: E501 line too long (81 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:198:80: E501 line too long (87 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:201:80: E501 line too long (83 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:212:80: E501 line too long (82 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:218:80: E501 line too long (84 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:227:80: E501 line too long (85 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:245:80: E501 line too long (83 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:254:80: E501 line too long (81 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:271:80: E501 line too long (83 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:277:80: E501 line too long (82 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:280:80: E501 line too long (80 > 79 characters)
+./scripts/diagnosis/check_data_flow.py:283:80: E501 line too long (85 > 79 characters)
+./scripts/models/random_forest.py:102:80: E501 line too long (80 > 79 characters)
+./scripts/models/random_forest.py:118:80: E501 line too long (92 > 79 characters)
+./scripts/models/random_forest.py:123:80: E501 line too long (97 > 79 characters)
+./scripts/models/random_forest.py:128:15: W291 trailing whitespace
+./scripts/models/random_forest.py:133:17: W291 trailing whitespace
+./scripts/models/random_forest.py:149:80: E501 line too long (82 > 79 characters)
+./scripts/models/random_forest.py:174:80: E501 line too long (87 > 79 characters)
+./scripts/models/random_forest.py:208:80: E501 line too long (105 > 79 characters)
+./scripts/models/random_forest.py:222:80: E501 line too long (80 > 79 characters)
+./scripts/models/random_forest.py:263:80: E501 line too long (111 > 79 characters)
+./scripts/models/random_forest.py:282:80: E501 line too long (80 > 79 characters)
+./scripts/models/random_forest.py:304:21: F541 f-string is missing placeholders
+./scripts/models/random_forest.py:341:80: E501 line too long (113 > 79 characters)
+./scripts/monitoring/round_tracker.py:3:80: E501 line too long (82 > 79 characters)
+./scripts/monitoring/round_tracker.py:112:80: E501 line too long (85 > 79 characters)
+./scripts/monitoring/round_tracker.py:161:80: E501 line too long (87 > 79 characters)
+./scripts/monitoring/round_tracker.py:186:80: E501 line too long (101 > 79 characters)
+./scripts/monitoring/round_tracker.py:189:80: E501 line too long (105 > 79 characters)
+./scripts/monitoring/round_tracker.py:201:9: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/monitoring/round_tracker.py:212:80: E501 line too long (101 > 79 characters)
+./scripts/monitoring/round_tracker.py:215:80: E501 line too long (105 > 79 characters)
+./scripts/monitoring/round_tracker.py:235:80: E501 line too long (82 > 79 characters)
+./scripts/monitoring/round_tracker.py:270:80: E501 line too long (85 > 79 characters)
+./scripts/monitoring/round_tracker.py:275:46: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:276:80: E501 line too long (91 > 79 characters)
+./scripts/monitoring/round_tracker.py:315:80: E501 line too long (91 > 79 characters)
+./scripts/monitoring/round_tracker.py:328:80: E501 line too long (80 > 79 characters)
+./scripts/monitoring/round_tracker.py:336:15: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:337:32: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:338:29: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:339:21: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:340:30: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:352:36: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:353:30: W291 trailing whitespace
+./scripts/monitoring/round_tracker.py:401:80: E501 line too long (85 > 79 characters)
+./scripts/monitoring/round_tracker.py:472:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/analysis.py:17:80: E501 line too long (91 > 79 characters)
+./scripts/prediction/analysis.py:49:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/analysis.py:53:80: E501 line too long (126 > 79 characters)
+./scripts/prediction/analysis.py:61:25: F541 f-string is missing placeholders
+./scripts/prediction/analysis.py:71:80: E501 line too long (93 > 79 characters)
+./scripts/prediction/analysis.py:74:25: F541 f-string is missing placeholders
+./scripts/prediction/analysis.py:74:80: E501 line too long (98 > 79 characters)
+./scripts/prediction/analysis.py:83:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/analysis.py:94:80: E501 line too long (90 > 79 characters)
+./scripts/prediction/analysis.py:99:80: E501 line too long (99 > 79 characters)
+./scripts/prediction/analysis.py:143:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/analysis.py:145:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/analysis.py:177:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/analysis.py:182:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/analysis.py:201:80: E501 line too long (90 > 79 characters)
+./scripts/prediction/analysis.py:237:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/analysis.py:250:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/analysis.py:354:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/analysis.py:365:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/analysis.py:396:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/analysis.py:397:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/analysis.py:401:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/analysis.py:414:80: E501 line too long (109 > 79 characters)
+./scripts/prediction/ensemble.py:116:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/ensemble.py:132:21: F541 f-string is missing placeholders
+./scripts/prediction/ensemble.py:136:80: E501 line too long (95 > 79 characters)
+./scripts/prediction/ensemble.py:178:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/ensemble.py:328:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/filtering.py:3:80: E501 line too long (94 > 79 characters)
+./scripts/prediction/filtering.py:48:13: F841 local variable 'regime_confidence' is assigned to but never used
+./scripts/prediction/filtering.py:52:80: E501 line too long (103 > 79 characters)
+./scripts/prediction/filtering.py:56:80: E501 line too long (89 > 79 characters)
+./scripts/prediction/filtering.py:72:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/filtering.py:73:80: E501 line too long (85 > 79 characters)
+./scripts/prediction/filtering.py:75:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/filtering.py:82:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/filtering.py:86:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/filtering.py:94:80: E501 line too long (92 > 79 characters)
+./scripts/prediction/filtering.py:123:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/filtering.py:133:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/filtering.py:137:80: E501 line too long (96 > 79 characters)
+./scripts/prediction/filtering.py:156:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/filtering.py:158:21: F541 f-string is missing placeholders
+./scripts/prediction/filtering.py:158:80: E501 line too long (94 > 79 characters)
+./scripts/prediction/filtering.py:164:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/filtering.py:167:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/filtering.py:172:80: E501 line too long (98 > 79 characters)
+./scripts/prediction/filtering.py:188:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/filtering.py:191:80: E501 line too long (135 > 79 characters)
+./scripts/prediction/filtering.py:197:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/handler.py:93:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/handler.py:157:80: E501 line too long (96 > 79 characters)
+./scripts/prediction/handler.py:161:80: E501 line too long (129 > 79 characters)
+./scripts/prediction/handler.py:194:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/handler.py:214:80: E501 line too long (89 > 79 characters)
+./scripts/prediction/handler.py:219:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/handler.py:233:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/handler.py:244:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/handler.py:256:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/handler.py:262:80: E501 line too long (120 > 79 characters)
+./scripts/prediction/handler.py:296:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/handler.py:360:80: E501 line too long (97 > 79 characters)
+./scripts/prediction/handler.py:389:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/handler.py:409:5: F811 redefinition of unused 'get_prediction' from line 47
+./scripts/prediction/handler.py:436:80: E501 line too long (92 > 79 characters)
+./scripts/prediction/handler.py:531:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/integration.py:33:80: E501 line too long (85 > 79 characters)
+./scripts/prediction/integration.py:44:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/integration.py:61:80: E501 line too long (122 > 79 characters)
+./scripts/prediction/integration.py:97:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/integration.py:123:80: E501 line too long (91 > 79 characters)
+./scripts/prediction/integration.py:186:80: E501 line too long (107 > 79 characters)
+./scripts/prediction/integration.py:194:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/strategies.py:31:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/strategies.py:42:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/strategies.py:92:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/strategies.py:99:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/strategies.py:153:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/strategies.py:183:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/strategies.py:184:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/strategies.py:215:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/strategies.py:289:80: E501 line too long (81 > 79 characters)
+./scripts/prediction/strategy_selector.py:3:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/strategy_selector.py:19:80: E501 line too long (89 > 79 characters)
+./scripts/prediction/strategy_selector.py:30:5: F841 local variable 'round_characteristics' is assigned to but never used
+./scripts/prediction/strategy_selector.py:43:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/strategy_selector.py:46:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/strategy_selector.py:50:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/strategy_selector.py:56:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/strategy_selector.py:67:80: E501 line too long (85 > 79 characters)
+./scripts/prediction/strategy_selector.py:91:80: E501 line too long (104 > 79 characters)
+./scripts/prediction/strategy_selector.py:99:80: E501 line too long (109 > 79 characters)
+./scripts/prediction/strategy_selector.py:109:9: SIM116 Use a dictionary lookup instead of 3+ if/elif-statements: return {'uptrend': "{'primary': 'trend_following', 'secondary': 'momentum', 'score': 0.5}", 'downtrend': "{'primary': 'trend_following', 'secondary': 'momentum', 'score': 0.5}", 'volatile': "{'primary': 'mean_reversion', 'secondary': 'volume_analysis', 'score': 0.5}"}.get(regime, {'primary': 'contrarian', 'secondary': 'support_resistance', 'score': 0.5})
+./scripts/prediction/strategy_selector.py:109:12: SIM114 Use logical or ((regime == 'uptrend') or (regime == 'downtrend')) and a single body
+./scripts/prediction/strategy_selector.py:110:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/strategy_selector.py:112:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/strategy_selector.py:209:80: E501 line too long (99 > 79 characters)
+./scripts/prediction/strategy_selector.py:257:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/strategy_selector.py:259:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/timing.py:36:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/timing.py:57:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/timing.py:65:9: F841 local variable 'round_duration' is assigned to but never used
+./scripts/prediction/timing.py:69:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/timing.py:93:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/timing.py:97:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/timing.py:103:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/timing.py:112:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/timing.py:119:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/timing.py:122:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/timing.py:127:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/timing.py:133:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/timing.py:142:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/timing.py:146:80: E501 line too long (121 > 79 characters)
+./scripts/prediction/timing.py:150:80: E501 line too long (123 > 79 characters)
+./scripts/prediction/timing.py:169:80: E501 line too long (84 > 79 characters)
+./scripts/prediction/timing.py:174:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/validation.py:17:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/validation.py:27:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/validation.py:37:28: F541 f-string is missing placeholders
+./scripts/prediction/validation.py:37:80: E501 line too long (88 > 79 characters)
+./scripts/prediction/validation.py:43:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/validation.py:49:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/validation.py:59:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/validation.py:63:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/validation.py:65:80: E501 line too long (120 > 79 characters)
+./scripts/prediction/validation.py:75:13: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/prediction/validation.py:76:17: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/prediction/validation.py:82:80: E501 line too long (103 > 79 characters)
+./scripts/prediction/weights.py:3:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/weights.py:9:1: F401 'numpy as np' imported but unused
+./scripts/prediction/weights.py:20:80: E501 line too long (109 > 79 characters)
+./scripts/prediction/weights.py:36:80: E501 line too long (108 > 79 characters)
+./scripts/prediction/weights.py:51:80: E501 line too long (103 > 79 characters)
+./scripts/prediction/weights.py:56:80: E501 line too long (99 > 79 characters)
+./scripts/prediction/weights.py:79:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/weights.py:81:9: F841 local variable 'weighted_accuracy' is assigned to but never used
+./scripts/prediction/weights.py:154:80: E501 line too long (80 > 79 characters)
+./scripts/prediction/weights.py:160:80: E501 line too long (115 > 79 characters)
+./scripts/prediction/weights.py:165:80: E501 line too long (115 > 79 characters)
+./scripts/prediction/weights.py:172:80: E501 line too long (85 > 79 characters)
+./scripts/prediction/weights.py:197:80: E501 line too long (86 > 79 characters)
+./scripts/prediction/weights.py:199:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/weights.py:218:80: E501 line too long (83 > 79 characters)
+./scripts/prediction/weights.py:239:80: E501 line too long (96 > 79 characters)
+./scripts/prediction/weights.py:254:5: SIM116 Use a dictionary lookup instead of 3+ if/elif-statements: return {'uptrend': "{'model': 0.1, 'trend_following': 0.3, 'contrarian': 0.1, 'volume_analysis':\n    0.2, 'market_indicators': 0.3}", 'downtrend': "{'model': 0.1, 'trend_following': 0.25, 'contrarian': 0.15,\n    'volume_analysis': 0.2, 'market_indicators': 0.3}", 'ranging': "{'model': 0.1, 'trend_following': 0.15, 'contrarian': 0.25,\n    'volume_analysis': 0.2, 'market_indicators': 0.3}", 'volatile': "{'model': 0.05, 'trend_following': 0.15, 'contrarian': 0.2,\n    'volume_analysis': 0.3, 'market_indicators': 0.3}"}.get(regime)
+./scripts/prediction/weights.py:262:5: SIM116 Use a dictionary lookup instead of 3+ if/elif-statements: return {'downtrend': "{'model': 0.1, 'trend_following': 0.25, 'contrarian': 0.15,\n    'volume_analysis': 0.2, 'market_indicators': 0.3}", 'ranging': "{'model': 0.1, 'trend_following': 0.15, 'contrarian': 0.25,\n    'volume_analysis': 0.2, 'market_indicators': 0.3}", 'volatile': "{'model': 0.05, 'trend_following': 0.15, 'contrarian': 0.2,\n    'volume_analysis': 0.3, 'market_indicators': 0.3}"}.get(regime)
+./scripts/prediction/weights.py:283:80: E501 line too long (82 > 79 characters)
+./scripts/prediction/weights.py:300:5: SIM116 Use a dictionary lookup instead of 3+ if/elif-statements: return {'uptrend': "{'model': 0.55, 'trend_following': 0.7, 'contrarian': 0.45,\n    'volume_analysis': 0.6, 'market_indicators': 0.65}", 'downtrend': "{'model': 0.55, 'trend_following': 0.65, 'contrarian': 0.5,\n    'volume_analysis': 0.6, 'market_indicators': 0.6}", 'ranging': "{'model': 0.5, 'trend_following': 0.45, 'contrarian': 0.7,\n    'volume_analysis': 0.55, 'market_indicators': 0.6}", 'volatile': "{'model': 0.45, 'trend_following': 0.5, 'contrarian': 0.55,\n    'volume_analysis': 0.65, 'market_indicators': 0.55}"}.get(regime)
+./scripts/prediction/weights.py:308:5: SIM116 Use a dictionary lookup instead of 3+ if/elif-statements: return {'downtrend': "{'model': 0.55, 'trend_following': 0.65, 'contrarian': 0.5,\n    'volume_analysis': 0.6, 'market_indicators': 0.6}", 'ranging': "{'model': 0.5, 'trend_following': 0.45, 'contrarian': 0.7,\n    'volume_analysis': 0.55, 'market_indicators': 0.6}", 'volatile': "{'model': 0.45, 'trend_following': 0.5, 'contrarian': 0.55,\n    'volume_analysis': 0.65, 'market_indicators': 0.55}"}.get(regime)
+./scripts/prediction/weights.py:353:5: SIM116 Use a dictionary lookup instead of 3+ if/elif-statements: return {'uptrend': "{'market_indicators': 0.25, 'trend_following': 0.2, 'contrarian': 0.1,\n    'volume_analysis': 0.15, 'model': 0.05}", 'downtrend': "{'market_indicators': 0.25, 'trend_following': 0.2, 'contrarian': 0.15,\n    'volume_analysis': 0.15, 'model': 0.05}", 'ranging': "{'market_indicators': 0.2, 'trend_following': 0.1, 'contrarian': 0.25,\n    'volume_analysis': 0.15, 'model': 0.05}", 'volatile': "{'market_indicators': 0.2, 'trend_following': 0.1, 'contrarian': 0.15,\n    'volume_analysis': 0.25, 'model': 0.05}"}.get(regime)
+./scripts/prediction/weights.py:361:5: SIM116 Use a dictionary lookup instead of 3+ if/elif-statements: return {'downtrend': "{'market_indicators': 0.25, 'trend_following': 0.2, 'contrarian': 0.15,\n    'volume_analysis': 0.15, 'model': 0.05}", 'ranging': "{'market_indicators': 0.2, 'trend_following': 0.1, 'contrarian': 0.25,\n    'volume_analysis': 0.15, 'model': 0.05}", 'volatile': "{'market_indicators': 0.2, 'trend_following': 0.1, 'contrarian': 0.15,\n    'volume_analysis': 0.25, 'model': 0.05}"}.get(regime)
+./scripts/prediction/weights.py:434:80: E501 line too long (87 > 79 characters)
+./scripts/prediction/weights.py:435:5: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/trading/betting.py:6:1: F401 'json' imported but unused
+./scripts/trading/betting.py:9:1: F401 'sys' imported but unused
+./scripts/trading/betting.py:14:1: F401 'web3.Web3' imported but unused
+./scripts/trading/betting.py:61:80: E501 line too long (82 > 79 characters)
+./scripts/trading/betting.py:97:80: E501 line too long (82 > 79 characters)
+./scripts/trading/betting.py:115:80: E501 line too long (90 > 79 characters)
+./scripts/trading/betting.py:123:80: E501 line too long (90 > 79 characters)
+./scripts/trading/betting.py:139:80: E501 line too long (86 > 79 characters)
+./scripts/trading/betting.py:162:80: E501 line too long (104 > 79 characters)
+./scripts/trading/betting.py:175:80: E501 line too long (101 > 79 characters)
+./scripts/trading/betting.py:180:80: E501 line too long (100 > 79 characters)
+./scripts/trading/betting.py:186:80: E501 line too long (83 > 79 characters)
+./scripts/trading/betting.py:190:80: E501 line too long (111 > 79 characters)
+./scripts/trading/betting.py:201:80: E501 line too long (95 > 79 characters)
+./scripts/trading/betting.py:208:80: E501 line too long (97 > 79 characters)
+./scripts/trading/betting.py:215:80: E501 line too long (90 > 79 characters)
+./scripts/trading/betting.py:232:80: E501 line too long (121 > 79 characters)
+./scripts/trading/betting.py:237:80: E501 line too long (113 > 79 characters)
+./scripts/trading/betting.py:242:9: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/trading/betting.py:243:80: E501 line too long (85 > 79 characters)
+./scripts/trading/betting.py:246:80: E501 line too long (91 > 79 characters)
+./scripts/trading/betting.py:278:34: W291 trailing whitespace
+./scripts/trading/betting.py:284:80: E501 line too long (83 > 79 characters)
+./scripts/trading/betting.py:287:34: W291 trailing whitespace
+./scripts/trading/betting.py:296:34: W291 trailing whitespace
+./scripts/trading/betting.py:322:80: E501 line too long (81 > 79 characters)
+./scripts/trading/betting.py:346:80: E501 line too long (85 > 79 characters)
+./scripts/trading/betting.py:364:80: E501 line too long (107 > 79 characters)
+./scripts/trading/betting.py:372:80: E501 line too long (85 > 79 characters)
+./scripts/trading/betting.py:379:80: E501 line too long (93 > 79 characters)
+./scripts/trading/betting.py:387:80: E501 line too long (86 > 79 characters)
+./scripts/trading/betting.py:389:80: E501 line too long (84 > 79 characters)
+./scripts/trading/betting.py:392:80: E501 line too long (80 > 79 characters)
+./scripts/trading/betting.py:397:80: E501 line too long (95 > 79 characters)
+./scripts/trading/betting.py:402:80: E501 line too long (84 > 79 characters)
+./scripts/trading/betting.py:407:80: E501 line too long (99 > 79 characters)
+./scripts/trading/betting.py:433:80: E501 line too long (111 > 79 characters)
+./scripts/trading/betting.py:473:23: W291 trailing whitespace
+./scripts/trading/betting.py:474:25: W291 trailing whitespace
+./scripts/trading/betting.py:479:51: W291 trailing whitespace
+./scripts/trading/betting.py:490:23: W291 trailing whitespace
+./scripts/trading/betting.py:491:25: W291 trailing whitespace
+./scripts/trading/betting.py:496:51: W291 trailing whitespace
+./scripts/trading/betting.py:554:80: E501 line too long (83 > 79 characters)
+./scripts/trading/betting.py:558:26: F541 f-string is missing placeholders
+./scripts/trading/betting.py:572:80: E501 line too long (102 > 79 characters)
+./scripts/trading/betting.py:574:21: F541 f-string is missing placeholders
+./scripts/trading/betting.py:575:80: E501 line too long (86 > 79 characters)
+./scripts/trading/betting.py:577:80: E501 line too long (95 > 79 characters)
+./scripts/trading/betting.py:587:80: E501 line too long (97 > 79 characters)
+./scripts/trading/betting.py:591:80: E501 line too long (94 > 79 characters)
+./scripts/trading/betting.py:593:80: E501 line too long (85 > 79 characters)
+./scripts/trading/betting.py:602:9: SIM102 Use a single if-statement instead of nested if-statements
+./scripts/trading/betting.py:612:80: E501 line too long (112 > 79 characters)
+./scripts/trading/betting.py:618:80: E501 line too long (132 > 79 characters)
+./scripts/trading/betting.py:637:80: E501 line too long (95 > 79 characters)
+./scripts/trading/betting.py:649:80: E501 line too long (88 > 79 characters)
+./scripts/trading/betting.py:654:80: E501 line too long (82 > 79 characters)
+./scripts/trading/betting.py:658:80: E501 line too long (86 > 79 characters)
+./scripts/trading/betting.py:664:28: F541 f-string is missing placeholders
+./scripts/trading/betting.py:667:80: E501 line too long (97 > 79 characters)
+./scripts/trading/betting.py:675:80: E501 line too long (114 > 79 characters)
+./scripts/trading/betting.py:693:80: E501 line too long (85 > 79 characters)
+./scripts/trading/betting.py:716:80: E501 line too long (141 > 79 characters)
+./scripts/trading/betting.py:767:80: E501 line too long (82 > 79 characters)
+./scripts/trading/betting.py:769:80: E501 line too long (85 > 79 characters)
+./scripts/trading/betting.py:829:80: E501 line too long (84 > 79 characters)
+./scripts/trading/betting.py:833:80: E501 line too long (85 > 79 characters)
+./scripts/trading/betting.py:852:80: E501 line too long (87 > 79 characters)
+./scripts/trading/betting.py:855:80: E501 line too long (84 > 79 characters)
+./scripts/trading/betting.py:1046:80: E501 line too long (86 > 79 characters)
+./scripts/trading/money.py:70:80: E501 line too long (107 > 79 characters)
+./scripts/trading/money.py:93:80: E501 line too long (87 > 79 characters)
+./scripts/trading/money.py:146:80: E501 line too long (87 > 79 characters)
+./scripts/trading/money.py:147:80: E501 line too long (88 > 79 characters)
+./scripts/trading/money.py:204:80: E501 line too long (90 > 79 characters)
+./scripts/trading/money.py:239:80: E501 line too long (111 > 79 characters)
+./scripts/ui/desktop.py:6:1: F401 'json' imported but unused
+./scripts/ui/desktop.py:13:1: F401 'PIL.Image' imported but unused
+./scripts/ui/desktop.py:13:1: F401 'PIL.ImageTk' imported but unused
+./scripts/ui/desktop.py:15:1: F401 '..core.config' imported but unused
+./scripts/ui/desktop.py:78:80: E501 line too long (80 > 79 characters)
+./scripts/ui/desktop.py:82:80: E501 line too long (88 > 79 characters)
+./scripts/ui/desktop.py:164:80: E501 line too long (86 > 79 characters)
+./scripts/ui/desktop.py:232:13: E722 do not use bare 'except'
+./scripts/ui/desktop.py:237:80: E501 line too long (82 > 79 characters)
+./scripts/ui/desktop.py:243:80: E501 line too long (85 > 79 characters)
+./scripts/ui/desktop.py:254:80: E501 line too long (81 > 79 characters)
+./scripts/ui/desktop.py:267:24: F821 undefined name 'datetime'
+./scripts/ui/desktop.py:267:80: E501 line too long (85 > 79 characters)
+./scripts/ui/desktop.py:277:24: F821 undefined name 'datetime'
+./scripts/ui/desktop.py:277:80: E501 line too long (85 > 79 characters)
+./scripts/ui/desktop.py:287:16: F821 undefined name 'datetime'
+./scripts/ui/desktop.py:287:80: E501 line too long (83 > 79 characters)
+./scripts/ui/desktop.py:303:13: F841 local variable 'app' is assigned to but never used
+./scripts/ui/web.py:9:1: F401 'time' imported but unused
+./scripts/ui/web.py:14:1: F401 'psutil' imported but unused
+./scripts/ui/web.py:15:1: F401 'flask.request' imported but unused
+./scripts/ui/web.py:15:1: F401 'flask.send_file' imported but unused
+./scripts/ui/web.py:15:1: F401 'flask.send_from_directory' imported but unused
+./scripts/ui/web.py:18:1: F401 '..core.config' imported but unused
+./scripts/ui/web.py:19:1: F401 '..data.database.get_recent_trades' imported but unused
+./scripts/ui/web.py:19:1: F401 '..data.database.get_trade_performance' imported but unused
+./scripts/ui/web.py:20:1: F401 '..wallet.get_wallet_balance' imported but unused
+./scripts/ui/web.py:64:80: E501 line too long (87 > 79 characters)
+./scripts/ui/web.py:67:79: E712 comparison to True should be 'if cond is True:' or 'if cond:'
+./scripts/ui/web.py:67:80: E501 line too long (86 > 79 characters)
+./scripts/ui/web.py:69:80: E501 line too long (86 > 79 characters)
+./scripts/ui/web.py:72:80: E501 line too long (83 > 79 characters)
+./scripts/ui/web.py:80:80: E501 line too long (80 > 79 characters)
+./scripts/ui/web.py:81:80: E501 line too long (83 > 79 characters)
+./scripts/ui/web.py:87:80: E501 line too long (82 > 79 characters)
+./scripts/ui/web.py:88:80: E501 line too long (85 > 79 characters)
+./scripts/ui/web.py:113:80: E501 line too long (82 > 79 characters)
+./scripts/utils/async_utils.py:8:1: F401 'time' imported but unused
+./scripts/utils/async_utils.py:42:80: E501 line too long (89 > 79 characters)
+./scripts/utils/async_utils.py:85:80: E501 line too long (93 > 79 characters)
+./scripts/utils/helpers.py:19:80: E501 line too long (82 > 79 characters)
+./scripts/utils/helpers.py:60:80: E501 line too long (85 > 79 characters)
+./scripts/utils/helpers.py:91:9: SIM105 Use 'contextlib.suppress(Exception)'
+./scripts/utils/helpers.py:206:80: E501 line too long (83 > 79 characters)
+./scripts/utils/helpers.py:208:80: E501 line too long (87 > 79 characters)
+./scripts/utils/helpers.py:238:80: E501 line too long (81 > 79 characters)
+./scripts/utils/helpers.py:243:80: E501 line too long (90 > 79 characters)
+./scripts/utils/helpers.py:249:80: E501 line too long (87 > 79 characters)
+./scripts/utils/helpers.py:251:80: E501 line too long (88 > 79 characters)
+./scripts/utils/helpers.py:255:80: E501 line too long (86 > 79 characters)
+./scripts/utils/helpers.py:257:80: E501 line too long (81 > 79 characters)
+./scripts/utils/helpers.py:274:80: E501 line too long (82 > 79 characters)
+./scripts/utils/helpers.py:277:80: E501 line too long (100 > 79 characters)
+./scripts/utils/helpers.py:284:80: E501 line too long (100 > 79 characters)
+./scripts/utils/helpers.py:294:80: E501 line too long (86 > 79 characters)
+./scripts/utils/helpers.py:298:80: E501 line too long (86 > 79 characters)
+./scripts/utils/helpers.py:301:80: E501 line too long (125 > 79 characters)
+./scripts/utils/helpers.py:332:80: E501 line too long (83 > 79 characters)
+./scripts/utils/helpers.py:372:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/balance.py:8:1: F401 'web3.Web3' imported but unused
+./scripts/wallet/betting.py:20:80: E501 line too long (88 > 79 characters)
+./scripts/wallet/betting.py:25:80: E501 line too long (80 > 79 characters)
+./scripts/wallet/betting.py:41:80: E501 line too long (83 > 79 characters)
+./scripts/wallet/betting.py:42:80: E501 line too long (83 > 79 characters)
+./scripts/wallet/betting.py:78:80: E501 line too long (87 > 79 characters)
+./scripts/wallet/betting.py:87:80: E501 line too long (82 > 79 characters)
+./scripts/wallet/betting.py:115:80: E501 line too long (87 > 79 characters)
+./scripts/wallet/betting.py:126:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/betting.py:149:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/betting.py:151:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/betting.py:169:80: E501 line too long (82 > 79 characters)
+./scripts/wallet/betting.py:171:80: E501 line too long (93 > 79 characters)
+./scripts/wallet/betting.py:178:80: E501 line too long (88 > 79 characters)
+./scripts/wallet/betting.py:183:80: E501 line too long (89 > 79 characters)
+./scripts/wallet/claims.py:37:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/claims.py:51:80: E501 line too long (110 > 79 characters)
+./scripts/wallet/claims.py:62:80: E501 line too long (84 > 79 characters)
+./scripts/wallet/claims.py:63:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/claims.py:84:80: E501 line too long (129 > 79 characters)
+./scripts/wallet/claims.py:92:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/claims.py:111:80: E501 line too long (119 > 79 characters)
+./scripts/wallet/claims.py:144:80: E501 line too long (80 > 79 characters)
+./scripts/wallet/claims.py:180:80: E501 line too long (88 > 79 characters)
+./scripts/wallet/claims.py:192:80: E501 line too long (81 > 79 characters)
+./scripts/wallet/claims.py:198:80: E501 line too long (85 > 79 characters)
+./scripts/wallet/claims.py:203:80: E501 line too long (82 > 79 characters)
+./scripts/wallet/claims.py:210:80: E501 line too long (87 > 79 characters)
+./scripts/wallet/claims.py:214:80: E501 line too long (82 > 79 characters)
+./scripts/wallet/claims.py:216:80: E501 line too long (80 > 79 characters)
+./scripts/wallet/developer.py:21:80: E501 line too long (87 > 79 characters)
+./scripts/wallet/developer.py:60:80: E501 line too long (80 > 79 characters)
+./tests/test_models/test_ai_self_learning.py:6:1: F401 'numpy as np' imported but unused
+./tests/test_models/test_ai_self_learning.py:7:1: F401 'pandas as pd' imported but unused
+./tests/test_models/test_ai_self_learning.py:10:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_ai_self_learning.py:12:1: E402 module level import not at top of file
+./tests/test_models/test_ai_self_learning.py:95:80: E501 line too long (87 > 79 characters)
+./tests/test_models/test_ai_self_learning.py:102:80: E501 line too long (80 > 79 characters)
+./tests/test_models/test_ai_strategy.py:4:1: F401 'unittest.mock.mock_open' imported but unused
+./tests/test_models/test_ai_strategy.py:6:1: F401 'joblib' imported but unused
+./tests/test_models/test_ai_strategy.py:11:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_ai_strategy.py:13:1: E402 module level import not at top of file
+./tests/test_models/test_hybrid.py:4:1: F401 'unittest.mock.MagicMock' imported but unused
+./tests/test_models/test_hybrid.py:6:1: F401 'numpy as np' imported but unused
+./tests/test_models/test_hybrid.py:9:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_hybrid.py:11:1: E402 module level import not at top of file
+./tests/test_models/test_rf.py:4:1: F401 'unittest.mock.mock_open' imported but unused
+./tests/test_models/test_rf.py:10:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_rf.py:12:1: E402 module level import not at top of file
+./tests/test_models/test_rf.py:33:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_rf_enhanced.py:4:1: F401 'unittest.mock.MagicMock' imported but unused
+./tests/test_models/test_rf_enhanced.py:6:1: F401 'numpy as np' imported but unused
+./tests/test_models/test_rf_enhanced.py:7:1: F401 'pandas as pd' imported but unused
+./tests/test_models/test_rf_enhanced.py:10:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_rf_enhanced.py:12:1: E402 module level import not at top of file
+./tests/test_models/test_rf_enhanced.py:23:80: E501 line too long (87 > 79 characters)
+./tests/test_models/test_rf_enhanced.py:81:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_rf_enhanced.py:91:80: E501 line too long (86 > 79 characters)
+./tests/test_models/test_rf_enhanced.py:98:80: E501 line too long (88 > 79 characters)
+./tests/test_models/test_rf_enhanced.py:122:80: E501 line too long (82 > 79 characters)
+./tests/test_models/test_ta.py:9:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_ta.py:11:1: E402 module level import not at top of file
+./tests/test_models/test_ta.py:60:80: E501 line too long (83 > 79 characters)
+./tests/test_models/test_ta.py:72:80: E501 line too long (81 > 79 characters)
+./tests/test_models/test_ta.py:74:80: E501 line too long (81 > 79 characters)
+./tests/test_models/test_ta.py:78:80: E501 line too long (82 > 79 characters)
+./tests/test_models/test_ta.py:127:80: E501 line too long (88 > 79 characters)
+./tests/test_models/test_ta.py:150:80: E501 line too long (82 > 79 characters)
+./tests/test_models/test_ta.py:171:80: E501 line too long (83 > 79 characters)

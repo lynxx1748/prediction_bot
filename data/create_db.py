@@ -1,6 +1,6 @@
-import sqlite3
-import os
 import logging
+import os
+import sqlite3
 from pathlib import Path
 
 # Import from configuration module
@@ -10,19 +10,20 @@ from configuration import config
 logger = logging.getLogger(__name__)
 
 # Get database paths from configuration
-DB_PATH = Path(config.get('database.file')).parent
+DB_PATH = Path(config.get("database.file")).parent
 PREDICTION_DB_FILE = DB_PATH / "prediction_history.db"
 HISTORICAL_DB_FILE = DB_PATH / "historical_data.db"
 
 # Get table names from configuration
-PREDICTION_TABLE_NAME = config.get('database.tables.predictions')
-HISTORICAL_TABLE_NAME = config.get('database.tables.trades')
-SIGNAL_PERFORMANCE_TABLE = config.get('database.tables.signal_performance')
+PREDICTION_TABLE_NAME = config.get("database.tables.predictions")
+HISTORICAL_TABLE_NAME = config.get("database.tables.trades")
+SIGNAL_PERFORMANCE_TABLE = config.get("database.tables.signal_performance")
+
 
 def create_or_update_table(db_file, table_name, schema):
     """
     Create or update a table in the specified database.
-    
+
     Args:
         db_file: Path to the database file
         table_name: Name of the table
@@ -30,7 +31,7 @@ def create_or_update_table(db_file, table_name, schema):
     """
     # Ensure the database directory exists
     os.makedirs(db_file.parent, exist_ok=True)
-    
+
     conn = sqlite3.connect(str(db_file))
     cursor = conn.cursor()
 
@@ -40,6 +41,7 @@ def create_or_update_table(db_file, table_name, schema):
     conn.commit()
     conn.close()
     logger.info(f"Table '{table_name}' in '{db_file}' is up to date!")
+
 
 def initialize_databases():
     """
@@ -88,7 +90,7 @@ def initialize_databases():
     """
 
     # Schema for the signal performance table
-    signal_performance_schema = f'''
+    signal_performance_schema = f"""
     CREATE TABLE IF NOT EXISTS {SIGNAL_PERFORMANCE_TABLE} (
         signal_name TEXT PRIMARY KEY,
         correct_predictions INTEGER DEFAULT 0,
@@ -100,20 +102,23 @@ def initialize_databases():
         last_updated TEXT,
         weight REAL DEFAULT 0.0
     )
-    '''
+    """
 
     # Create/update tables in both databases
     create_or_update_table(PREDICTION_DB_FILE, PREDICTION_TABLE_NAME, prediction_schema)
-    create_or_update_table(PREDICTION_DB_FILE, SIGNAL_PERFORMANCE_TABLE, signal_performance_schema)
+    create_or_update_table(
+        PREDICTION_DB_FILE, SIGNAL_PERFORMANCE_TABLE, signal_performance_schema
+    )
     create_or_update_table(HISTORICAL_DB_FILE, HISTORICAL_TABLE_NAME, analytics_schema)
-    
+
     logger.info("All database tables initialized successfully")
+
 
 if __name__ == "__main__":
     # Setup basic logging when run directly
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
-    
+
     initialize_databases()
