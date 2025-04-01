@@ -43,10 +43,11 @@ from models.func_ta import TechnicalAnalysis
 from scripts.analysis.market import (
     bootstrap_market_data,
     get_historical_prices,
-    get_market_sentiment
+    get_market_sentiment,
+    get_market_direction,
+    get_technical_prediction
 )
 from scripts.analysis.regime import detect_market_regime
-from scripts.analysis.technical import get_technical_prediction
 
 # Local imports - Blockchain
 from scripts.data.blockchain import (
