@@ -1953,7 +1953,8 @@ def record_bet(bet_data):
                 strategy TEXT,
                 gas_price REAL,
                 tx_hash TEXT,
-                test_mode INTEGER DEFAULT 0
+                test_mode INTEGER DEFAULT 0,
+                bet_status TEXT DEFAULT 'pending'  -- Can be: pending, placed, completed, failed
             )
         """
         )

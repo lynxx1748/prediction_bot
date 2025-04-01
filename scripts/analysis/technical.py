@@ -65,7 +65,7 @@ def get_technical_prediction(round_data):
     Get prediction based on technical analysis.
 
     Args:
-        round_data: Dictionary with round data
+        round_data: Dictionary or list with round data
 
     Returns:
         tuple: (prediction, confidence) where prediction is "BULL" or "BEAR"
@@ -73,16 +73,22 @@ def get_technical_prediction(round_data):
     try:
         from ..data.processing import get_recent_price_changes
 
+        # Handle different round_data formats
+        if isinstance(round_data, list):
+            # If it's a list, convert to dictionary format
+            if len(round_data) > 4:
+                round_data = {
+                    "bullAmount": float(round_data[2]),
+                    "bearAmount": float(round_data[3]),
+                    "totalAmount": float(round_data[4])
+                }
+            else:
+                round_data = {}
+
         # Ensure round_data is a dictionary
         if not isinstance(round_data, dict):
             logger.warning(f"Expected dictionary for round_data, got {type(round_data)}")
-            if round_data is None:
-                round_data = {}
-            elif isinstance(round_data, list) and len(round_data) > 0:
-                # If it's a list with data, try to use the first item if it's a dict
-                round_data = round_data[0] if isinstance(round_data[0], dict) else {}
-            else:
-                round_data = {}
+            round_data = {}
 
         # Get recent price changes
         price_changes = get_recent_price_changes(10)

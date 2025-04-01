@@ -29,8 +29,8 @@ from ..utils.helpers import detect_swing_pattern, optimize_swing_trading
 # Setup logger
 logger = logging.getLogger(__name__)
 
-# Global tracking variables
-placed_bets = {}
+# Global tracking variables - use the one from main.py
+from main import placed_bets
 claimable_rounds = []
 wins = 0
 losses = 0

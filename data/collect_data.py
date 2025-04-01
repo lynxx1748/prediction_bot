@@ -1,230 +1,158 @@
-import json
+"""
+Data collection functionality for trading bot.
+For fetching historical and real-time data.
+"""
+
 import logging
 import os
-import sqlite3
 import time
-from datetime import datetime
-from pathlib import Path
+from datetime import datetime, timedelta
 
 import requests
-from web3 import Web3
 
-# Import from config module
-from configuration import config, get_contract_abi
+from scripts.core.constants import CONTRACT_ADDRESS, MARKET_API, contract
+from scripts.data.database import get_db_connection, TABLES
 
-# Setup logger
 logger = logging.getLogger(__name__)
 
-# Load settings from configuration
-RPC_URL = config.get("blockchain.rpc.primary")
-PREDICTION_CONTRACT_ADDRESS = config.get("blockchain.contract_address")
-DB_FILE = config.get("database.file")
-TABLE_NAME = config.get("database.tables.trades")
-MARKET_API_URL = config.get("api.market")
-
-# Initialize Web3
-web3 = Web3(Web3.HTTPProvider(RPC_URL))
-
-# Load ABI
-contract_abi = get_contract_abi()
-if contract_abi:
-    contract = web3.eth.contract(address=PREDICTION_CONTRACT_ADDRESS, abi=contract_abi)
-else:
-    logger.error("Failed to load contract ABI")
-    raise ValueError("Contract ABI could not be loaded")
-
-
-def create_table():
-    """Create the database table if it doesn't exist."""
-    # Make sure directory exists
-    os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
-
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute(
-        f"""
-        CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
-            epoch INTEGER PRIMARY KEY,
-            datetime TEXT,
-            hour INTEGER,
-            minute INTEGER,
-            second INTEGER,
-            lockPrice REAL,
-            closePrice REAL,
-            bullAmount REAL,
-            bearAmount REAL,
-            totalAmount REAL,
-            bullRatio REAL,
-            bearRatio REAL,
-            bnbPrice REAL,
-            btcPrice REAL,
-            outcome TEXT
-        )
+def fetch_historical_data(days=30, save_to_db=True):
     """
-    )
-    conn.commit()
-    conn.close()
-    logger.info(f"Database table {TABLE_NAME} created/confirmed")
+    Fetch historical price and betting data.
 
+    Args:
+        days: Number of days of history to fetch
+        save_to_db: Whether to save fetched data to database
 
-def get_last_saved_epoch():
-    """Get the most recent epoch saved in the database."""
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT MAX(epoch) FROM {TABLE_NAME}")
-    last_epoch = cursor.fetchone()[0]
-    conn.close()
-    return last_epoch if last_epoch is not None else 0
+    Returns:
+        dict: Historical data
+    """
+    logger.info(f"Fetching {days} days of historical data")
 
-
-def fetch_market_data():
-    """Fetch current market prices from API."""
     try:
-        response = requests.get(MARKET_API_URL)
-        data = response.json()
-        bnb_price = next(
-            (item["price"] for item in data if item["symbol"] == "BNBUSDT"), None
-        )
-        btc_price = next(
-            (item["price"] for item in data if item["symbol"] == "BTCUSDT"), None
-        )
-        return float(bnb_price), float(btc_price)
-    except Exception as e:
-        logger.error(f"Error fetching market data: {e}")
-        return None, None
+        # Calculate start time
+        start_time = int((datetime.now() - timedelta(days=days)).timestamp())
+        current_time = int(time.time())
 
-
-def fetch_round_data(epoch):
-    """Fetch data for a specific round/epoch."""
-    try:
-        round_data = contract.functions.rounds(epoch).call()
-        total_amount = round_data[8] / 1e18
-        bull_amount = round_data[9] / 1e18
-        bear_amount = round_data[10] / 1e18
-        bull_ratio = bull_amount / total_amount if total_amount > 0 else 0
-        bear_ratio = bear_amount / total_amount if total_amount > 0 else 0
-        bnb_price, btc_price = fetch_market_data()
-        close_timestamp = round_data[3]
-        dt = datetime.fromtimestamp(close_timestamp, datetime.timezone.utc)
-
-        lock_price = round_data[4] / 1e18
-        close_price = round_data[5] / 1e18
-        outcome = (
-            "Bull"
-            if close_price > lock_price
-            else "Bear"
-            if close_price < lock_price
-            else "Draw"
-        )
-
-        return {
-            "epoch": epoch,
-            "datetime": dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "hour": dt.hour,
-            "minute": dt.minute,
-            "second": dt.second,
-            "lockPrice": lock_price,
-            "closePrice": close_price,
-            "bullAmount": bull_amount,
-            "bearAmount": bear_amount,
-            "totalAmount": total_amount,
-            "bullRatio": bull_ratio,
-            "bearRatio": bear_ratio,
-            "bnbPrice": bnb_price,
-            "btcPrice": btc_price,
-            "outcome": outcome,
+        # Initialize data structure
+        historical_data = {
+            "prices": [],
+            "rounds": [],
+            "start_timestamp": start_time,
+            "end_timestamp": current_time,
+            "contract_address": CONTRACT_ADDRESS,
         }
+
+        # Fetch round data from contract
+        current_epoch = contract.functions.currentEpoch().call()
+        start_epoch = max(1, current_epoch - (days * 24 * 60 * 60 // 300))  # Convert days to epochs
+        
+        for epoch in range(start_epoch, current_epoch):
+            round_data = contract.functions.rounds(epoch).call()
+            historical_data["rounds"].append({
+                "epoch": epoch,
+                "lockPrice": round_data[4],
+                "closePrice": round_data[5],
+                "bullAmount": round_data[9],
+                "bearAmount": round_data[10],
+                "totalAmount": round_data[8],
+                "outcome": "BULL" if round_data[5] > round_data[4] else "BEAR"
+            })
+
+        # Fetch price data from API
+        if MARKET_API:
+            url = f"{MARKET_API}/historical-prices?days={days}&contract={CONTRACT_ADDRESS}"
+            response = requests.get(url)
+            if response.status_code == 200:
+                price_data = response.json()
+                historical_data["prices"] = price_data
+                logger.info(f"Fetched {len(price_data)} price points")
+            else:
+                logger.error(
+                    f"Failed to fetch historical prices: {response.status_code}"
+                )
+
+        # Save to database if requested
+        if save_to_db:
+            save_historical_data_to_db(historical_data)
+
+        return historical_data
+
     except Exception as e:
-        logger.error(f"Error fetching round {epoch} data: {e}")
+        logger.error(f"Error fetching historical data: {e}")
         return None
 
+def save_historical_data_to_db(historical_data):
+    """
+    Save historical data to database.
 
-def save_to_db(data):
-    """Save round data to the database."""
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    cursor.execute(
-        f"SELECT COUNT(*) FROM {TABLE_NAME} WHERE epoch = ?", (data["epoch"],)
-    )
-    count = cursor.fetchone()[0]
-    if count == 0:
-        cursor.execute(
-            f"""
-            INSERT INTO {TABLE_NAME} (epoch, datetime, hour, minute, second, lockPrice, closePrice, bullAmount, bearAmount, totalAmount, bullRatio, bearRatio, bnbPrice, btcPrice, outcome)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-            (
-                data["epoch"],
-                data["datetime"],
-                data["hour"],
-                data["minute"],
-                data["second"],
-                data["lockPrice"],
-                data["closePrice"],
-                data["bullAmount"],
-                data["bearAmount"],
-                data["totalAmount"],
-                data["bullRatio"],
-                data["bearRatio"],
-                data["bnbPrice"],
-                data["btcPrice"],
-                data["outcome"],
-            ),
-        )
-        logger.info(f"Inserted round {data['epoch']}")
-    conn.commit()
-    conn.close()
+    Args:
+        historical_data: Dictionary of historical prices and rounds
+    """
+    try:
+        # Ensure data directory exists
+        os.makedirs(os.path.dirname("data/trading_bot.db"), exist_ok=True)
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
+        # Save price data
+        for price_point in historical_data.get("prices", []):
+            try:
+                cursor.execute(
+                    f"""
+                    INSERT OR IGNORE INTO {TABLES['market_data']} 
+                    (timestamp, price, volume, market_cap, dominance)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        price_point.get("timestamp", 0),
+                        price_point.get("price", 0),
+                        price_point.get("volume", 0),
+                        price_point.get("market_cap", 0),
+                        price_point.get("dominance", 0),
+                    ),
+                )
+            except Exception as e:
+                logger.error(f"Error saving price point: {e}")
 
-def fetch_historical_data():
-    """Fetch and save historical rounds data."""
-    last_epoch = get_last_saved_epoch()
-    current_epoch = contract.functions.currentEpoch().call()
-    logger.info(f"Current epoch: {current_epoch}, Last saved epoch: {last_epoch}")
+        # Save round data
+        for round_data in historical_data.get("rounds", []):
+            try:
+                # First check if this round already exists
+                cursor.execute(
+                    f"""
+                    SELECT id FROM {TABLES['trades']} WHERE epoch = ?
+                    """,
+                    (round_data.get("epoch", 0),),
+                )
 
-    if last_epoch == 0:
-        start_epoch = max(1, current_epoch - 10000)
-    else:
-        start_epoch = last_epoch + 1
+                if cursor.fetchone() is None:
+                    cursor.execute(
+                        f"""
+                        INSERT INTO {TABLES['trades']} 
+                        (epoch, timestamp, lockPrice, closePrice, bullAmount, bearAmount, 
+                        totalAmount, bullRatio, bearRatio, outcome)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        (
+                            round_data.get("epoch", 0),
+                            round_data.get("closeTimestamp", 0),
+                            round_data.get("lockPrice", 0),
+                            round_data.get("closePrice", 0),
+                            round_data.get("bullAmount", 0),
+                            round_data.get("bearAmount", 0),
+                            round_data.get("totalAmount", 0),
+                            round_data.get("bullRatio", 0),
+                            round_data.get("bearRatio", 0),
+                            round_data.get("outcome", "UNKNOWN"),
+                        ),
+                    )
+            except Exception as e:
+                logger.error(f"Error saving round data: {e}")
 
-    if start_epoch >= current_epoch:
-        logger.info("Database is up to date.")
-        return
+        conn.commit()
+        conn.close()
+        logger.info("Historical data saved to database")
 
-    logger.info(f"Fetching from epoch {start_epoch} to {current_epoch - 1}")
-    for epoch in range(start_epoch, current_epoch):
-        round_data = fetch_round_data(epoch)
-        if round_data:
-            save_to_db(round_data)
-        else:
-            logger.warning(f"Skipping round {epoch} (no data).")
-    logger.info("Historical data catch-up complete.")
-
-
-def collect_real_time_data():
-    """Continuously collect new round data in real-time."""
-    logger.info("Starting real-time data collection...")
-    last_epoch = get_last_saved_epoch()
-    while True:
-        current_epoch = contract.functions.currentEpoch().call()
-        if current_epoch > last_epoch:
-            round_data = fetch_round_data(current_epoch)
-            if round_data:
-                save_to_db(round_data)
-                last_epoch = current_epoch
-                logger.info(f"Saved real-time round {current_epoch}.")
-        else:
-            logger.debug(f"Waiting for new round... (Current: {current_epoch})")
-        time.sleep(300)  # 5 minutes between checks
-
-
-if __name__ == "__main__":
-    # Setup basic logging when run directly
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
-
-    create_table()
-    fetch_historical_data()
-    collect_real_time_data()
+    except Exception as e:
+        logger.error(f"Error saving historical data to database: {e}")

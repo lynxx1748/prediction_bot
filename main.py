@@ -484,7 +484,7 @@ def display_recent_trades(limit=5):
             epoch = trade.get("epoch", "Unknown")
             prediction = trade.get("prediction", "Unknown")
             outcome = trade.get("outcome", "Unknown")
-            profit_loss = trade.get("profit_loss", 0)
+            profit_loss = trade.get("profit_loss", 0) or 0  # Handle None values
             win = trade.get("win", 0)
 
             result_emoji = "✅" if win else "❌"
