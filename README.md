@@ -32,6 +32,25 @@ A sophisticated prediction and betting system for cryptocurrency binary options 
 - **Simulation Mode**: Test strategies without risking real money
 - **Performance Tracking**: Records all predictions and outcomes for analysis
 
+## 📝 Changelog
+
+### [0.2.0]
+- Added comprehensive technical analysis integration
+- Improved market context analysis with multiple prediction methods
+- Enhanced test mode balance tracking and updates
+- Added weighted confidence calculation using strategy weights
+- Implemented high confidence signal filtering
+- Added AI strategy self-optimization capabilities
+- Improved database handling and NULL value management
+- Enhanced error handling and logging throughout the system
+
+### [0.1.0] - 2024-03-XX
+- Initial release with core prediction and betting functionality
+- Basic technical analysis implementation
+- Test mode with simulated betting
+- Database integration for tracking trades and predictions
+- Multiple prediction strategies integration
+
 ## 🧠 Prediction Strategies
 
 PredictoBet uses a combination of the following strategies:
@@ -135,10 +154,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 **Remember**: No prediction system is perfect. Always use caution when trading cryptocurrencies and never risk money you cannot afford to lose.
 
-### Fixed Database Storage Issues
-
-- Improved type handling for blockchain data
-- Fixed issues with NULL values in database
-- Enhanced data normalization and validation
-- Better error handling and diagnostic logging
 

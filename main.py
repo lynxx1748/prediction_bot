@@ -66,7 +66,8 @@ from scripts.data.database import (
     initialize_database,
     record_bet,
     record_trade,
-    update_prediction_outcome
+    update_prediction_outcome,
+    set_test_balance
 )
 
 # Local imports - Diagnosis
@@ -326,8 +327,9 @@ def simulate_round_result(epoch, prediction, amount):
         outcome = round_data["outcome"]
         won = prediction == outcome
 
-        # Calculate profit (in test mode use 1.9x multiplier to simulate house edge)
-        profit_loss = amount * 0.9 if won else -amount
+        # Calculate profit (in test mode use 1.98x multiplier to simulate house edge)
+        # House edge is typically 2-3%, so payout would be 1.98x instead of 2x
+        profit_loss = amount * 0.98 if won else -amount
 
         # Create result data
         result = {
@@ -339,6 +341,7 @@ def simulate_round_result(epoch, prediction, amount):
             "profit_loss": profit_loss,
             "closePrice": round_data.get("closePrice", 0),
             "lockPrice": round_data.get("lockPrice", 0),
+            "simulated": True
         }
 
         # Update statistics
@@ -421,7 +424,11 @@ def handle_round_completion(epoch, round_result):
                 balance = get_wallet_balance(mode="live")
             else:
                 # For test mode, update based on recorded profit/loss
-                balance = get_test_balance()
+                current_balance = get_test_balance()
+                new_balance = current_balance + round_result["profit_loss"]
+                set_test_balance(new_balance)
+                balance = new_balance
+                print(f"💰 Updated test balance: {balance:.6f} BNB")
         else:
             print(f"⚠️ No prediction found for epoch {epoch}")
 

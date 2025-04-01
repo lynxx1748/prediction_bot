@@ -1246,8 +1246,17 @@ def get_recent_trades(limit=20):
         if "timestamp" not in columns and "epoch" in columns:
             select_columns.append("epoch as timestamp")  # Use epoch as fallback
 
-        # Build and execute query
-        query = f"SELECT {', '.join(select_columns)} FROM {TABLES['trades']} ORDER BY epoch DESC LIMIT ?"
+        # Build and execute query with COALESCE to handle NULL values
+        query = f"""
+            SELECT 
+                {', '.join(select_columns)},
+                COALESCE(profit_loss, 0) as profit_loss,
+                COALESCE(win, 0) as win,
+                COALESCE(amount, 0) as amount
+            FROM {TABLES['trades']} 
+            ORDER BY epoch DESC 
+            LIMIT ?
+        """
         cursor.execute(query, (limit,))
 
         # Convert to list of dictionaries
@@ -1274,6 +1283,14 @@ def get_recent_trades(limit=20):
                 except:
                     # If timestamp can't be converted, use a placeholder
                     trade["datetime"] = "Unknown"
+
+            # Ensure numeric values are properly converted
+            for key in ["profit_loss", "win", "amount"]:
+                if key in trade:
+                    try:
+                        trade[key] = float(trade[key]) if key == "profit_loss" else int(trade[key])
+                    except (TypeError, ValueError):
+                        trade[key] = 0
 
         return trades
 
